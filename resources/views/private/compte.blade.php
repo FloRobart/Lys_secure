@@ -39,6 +39,11 @@
             <span class="normalText">Nombre de compte : <span class="normalTextBleuLogo font-bold">{{ $comptes->count() }}</span></span>
         </div>
 
+        <!-- Nombre de compte différents -->
+        <div class="rowCenterContainer">
+            <span class="normalText">Nombre de compte différents : <span class="normalTextBleuLogo font-bold">{{ $comptes->unique('name')->count() }}</span></span>
+        </div>
+
         <!-- Nombre d'email différents -->
         <div class="rowCenterContainer">
             <span class="normalText">Nombre d'identifiant différents : <span class="normalTextBleuLogo font-bold">{{ $comptes->unique('email')->count() }}</span></span>
@@ -46,7 +51,12 @@
 
         <!-- Nombre d'email différents -->
         <div class="rowCenterContainer">
-            <span class="normalText">Nombre d'email différents : <span class="normalTextBleuLogo font-bold">{{ $comptes->where('name', 'Gmail')->count() }}</span></span>
+            <span class="normalText">Nombre de compte Gmail différents : <span class="normalTextBleuLogo font-bold">{{ $comptes->where('name', 'Gmail')->count() }}</span></span>
+        </div>
+
+        <!-- Nombre de pseudo différents -->
+        <div class="rowCenterContainer">
+            <span class="normalText">Nombre de pseudo différents : <span class="normalTextBleuLogo font-bold">{{ $comptes->unique('pseudo')->count() }}</span></span>
         </div>
     </div>
 
@@ -61,7 +71,7 @@
                 <tr class="tableRow smallText text-center font-bold">
                     @php request()->get('order') == 'asc' ? $order = 'desc' : $order = 'asc'; @endphp
                     <th class="tableCell" title="Trier par ordre @if ($order == 'asc') alphabétique @else anti-alphabétique @endif du nom"><a href="{{ URL::current() . '?sort=name&order=' . $order }}">Nom du compte</a></th>
-                    <th class="tableCell" title="Trier par ordre @if ($order == 'asc') alphabétique @else anti-alphabétique @endif de l'email"><a href="{{ URL::current() . '?sort=email&order=' . $order }}">Email</a></th>
+                    <th class="tableCell" title="Trier par ordre @if ($order == 'asc') alphabétique @else anti-alphabétique @endif de l'email"><a href="{{ URL::current() . '?sort=email&order=' . $order }}">Identifiant / Email</a></th>
                     <th class="tableCell">Mot de passe</th>
                     <th class="tableCell" title="Trier par ordre @if ($order == 'asc') alphabétique @else anti-alphabétique @endif du pseudo"><a href="{{ URL::current() . '?sort=pseudo&order=' . $order }}">Pseudo</a></th>
                     <th class="tableCell max-sm:hidden" title="Trier par ordre chronologique"><a href="{{ URL::current() . '?sort=created_at&order=' . $order }}">Actions</a></th>
@@ -72,7 +82,7 @@
             <tbody class="w-full normalText">
                 @if (isset($comptes))
                     @foreach ($comptes as $compte)
-                        <tr class="tableRow smallText text-center">
+                        <tr class="tableRow smallText text-center" id="row_{{ $compte->id }}">
                             <!-- Nom du compte -->
                             @if (str_contains(strtolower(URL::current()), 'name'))
                                 <td class="tableCell"><a title="Afficher les comptes {{ $compte->name }}" href="{{ route('comptes.name', ['name' => $compte->name]) }}" class="link">{{ $compte->name }}</a></td>
@@ -178,6 +188,12 @@
         <!-- Bouton pour ajouter un compte -->
         <button onclick="showForm('Ajouter un compte', 'Ajouter', '{{ route('compte.add') }}')" id="button" class="buttonForm mt-8">Ajouter un compte</a>
     </div>
+
+    <!-- Options supplémentaires -->
+    <div class="colCenterContainer pt-32">
+        <button class="buttonForm">Sauvegarder les comptes dans un fichier texte</button>
+        <button class="buttonForm mt-8">Charger les comptes depuis un fichier texte</button>
+    </div>
 </section>
 @endsection
 
@@ -216,7 +232,20 @@
     /**
      * Copie le texte passé en paramètre dans le presse-papier du système quand il n'y a pas de connexion sécurisée (HTTPS)
      */
-    const unsecuredCopyToClipboard = (text, id) => { const textArea = document.createElement("textarea"); textArea.value=text; document.body.appendChild(textArea); textArea.focus();textArea.select(); try{document.execCommand('copy')}catch(err){console.error('Unable to copy to clipboard',err)}document.body.removeChild(textArea); document.getElementById("myTooltip_" + id).innerHTML = "Mot de passe copié";};
+    const unsecuredCopyToClipboard = (text, id) => {
+        const textArea = document.createElement('textarea');
+        textArea.value=text;
+        document.getElementById("row_" + id).appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        try {
+            document.execCommand('copy')
+        } catch(err) {
+            console.error('Unable to copy to clipboard',err)
+        }
+        document.getElementById("row_" + id).removeChild(textArea);
+        document.getElementById("myTooltip_" + id).innerHTML = "Mot de passe copié";
+    };
 
     /**
      * Copies the text passed as param to the system clipboard
@@ -242,43 +271,43 @@
 
 @section('styles')
 <style>
-/* Style pour le message lors de la copie du mot de passe */
-.tooltip {
-    position: relative;
-    display: inline-block;
-}
+    /* Style pour le message lors de la copie du mot de passe */
+    .tooltip {
+        position: relative;
+        display: inline-block;
+    }
 
-.tooltip .tooltiptext {
-    visibility: hidden;
-    width: 140px;
-    background-color: #555;
-    color: #fff;
-    text-align: center;
-    border-radius: 6px;
-    padding: 5px;
-    position: absolute;
-    z-index: 1;
-    bottom: 150%;
-    left: 50%;
-    margin-left: -75px;
-    opacity: 0;
-    transition: opacity 0.3s;
-}
+    .tooltip .tooltiptext {
+        visibility: hidden;
+        width: 140px;
+        background-color: #555;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px;
+        position: absolute;
+        z-index: 1;
+        bottom: 150%;
+        left: 50%;
+        margin-left: -75px;
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
 
-.tooltip .tooltiptext::after {
-    content: "";
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    margin-left: -5px;
-    border-width: 5px;
-    border-style: solid;
-    border-color: #555 transparent transparent transparent;
-}
+    .tooltip .tooltiptext::after {
+        content: "";
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        margin-left: -5px;
+        border-width: 5px;
+        border-style: solid;
+        border-color: #555 transparent transparent transparent;
+    }
 
-.tooltip:hover .tooltiptext {
-    visibility: visible;
-    opacity: 1;
-}
+    .tooltip:hover .tooltiptext {
+        visibility: visible;
+        opacity: 1;
+    }
 </style>
 @endsection

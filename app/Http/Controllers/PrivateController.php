@@ -12,6 +12,10 @@ use Illuminate\Http\Request;
 
 class PrivateController extends Controller
 {
+    private const ciphering = "AES-128-CTR"; /* Utilisation de l'algorithme de chiffrement AES-128-CTR */
+    private const options = 0; /* Utilisation de l'option 0 */
+    private const encryption_iv = '1234567891011121'; /* Vecteur d'initialisation */
+
     /*========*/
     /* Compte */
     /*========*/
@@ -186,9 +190,13 @@ class PrivateController extends Controller
         $compte->user_id = auth()->user()->id;
         $compte->name = ucfirst($request->name);
         $compte->email = $request->email;
-        $compte->password = $request->password;
         $compte->pseudo = $request->pseudo;
-
+        
+        /* Chiffrement du mot de passe */
+        $encryption_key = "GeeksforGeeks"; /* Clé de chiffrement */
+        $compte->password = openssl_encrypt($request->password, PrivateController::ciphering, $encryption_key, PrivateController::options, PrivateController::encryption_iv);
+        
+        
         /* Sauvegarde du compte */
         if ($compte->save()) {
             return back()->with('success', 'Le compte a été ajouté avec succès 👍.')->with('message', $message);
@@ -303,6 +311,12 @@ class PrivateController extends Controller
 
         if ($pseudo != '') {
             $comptes = $comptes->where('pseudo', $pseudo);
+        }
+
+        /* décriptage des mots de passe */
+        $encryption_key = "GeeksforGeeks"; /* Clé de chiffrement */
+        foreach ($comptes as $compte) {
+            $compte->password = openssl_decrypt($compte->password, PrivateController::ciphering, $encryption_key, PrivateController::options, PrivateController::encryption_iv);
         }
 
         return $order == 'asc' ? $comptes->sortBy($sort) : $comptes->sortByDesc($sort);

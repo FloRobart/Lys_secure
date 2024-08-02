@@ -12,7 +12,7 @@
 
         <!-- Titre de la page -->
         <!---------------------->
-        <title>Finances dashboard - @yield('title')</title>
+        <title>Gestionnaire de compte - @yield('title')</title>
 
         <!-- Fonts -->
         <!----------->

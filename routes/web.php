@@ -52,7 +52,7 @@ Route::middleware(['auth'])->group(function () {
     /* Ajoute, modifie et supprime des comptes */
     Route::post('/compte/add', [PrivateController::class, 'addCompte'])->name('compte.add');
     Route::post('/compte/edit', [PrivateController::class, 'editCompte'])->name('compte.edit');
-    Route::get('/compte/remove/{id}', [PrivateController::class, 'deleteCompte'])->name('compte.remove');
+    Route::get('/compte/remove/{id}', [PrivateController::class, 'removeCompte'])->name('compte.remove');
 });
 
 /* Route pour la redirection en cas de mauvaise authentification */

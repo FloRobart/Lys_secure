@@ -7,7 +7,7 @@
 @include('components.head')
 
 @section('title')
-    @yield('title', 'Finances dashboard')
+    @yield('title', 'Gestionnaire de comptes')
 @endsection
 
 @section('styles')

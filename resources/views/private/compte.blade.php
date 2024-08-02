@@ -166,7 +166,7 @@
         </form>
 
         <!-- Bouton pour ajouter un compte -->
-        <button onclick="showForm('Ajouter un compte', 'Ajouter', '{{ route('compte.add') }}')" id="button" class="buttonForm mt-8">Ajouter une épargne</a>
+        <button onclick="showForm('Ajouter un compte', 'Ajouter', '{{ route('compte.add') }}')" id="button" class="buttonForm mt-8">Ajouter un compte</a>
     </div>
 </section>
 @endsection

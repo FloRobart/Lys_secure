@@ -41,13 +41,13 @@ Route::middleware(['auth'])->group(function () {
     /*=========================*/
     /* Affiche des comptes */
     Route::get('/comptes', [PrivateController::class, 'comptes'])->name('comptes');
-    Route::get('/comptes/name/{name}', [PrivateController::class, 'comptes'])->name('comptes.name');
-    Route::get('/comptes/email/{email}', [PrivateController::class, 'comptes'])->name('comptes.email');
-    Route::get('/comptes/pseudo/{pseudo}', [PrivateController::class, 'comptes'])->name('comptes.pseudo');
-    Route::get('/comptes/name/{name}/email/{email}', [PrivateController::class, 'comptes'])->name('comptes.name.email');
-    Route::get('/comptes/name/{name}/pseudo/{pseudo}', [PrivateController::class, 'comptes'])->name('comptes.name.pseudo');
-    Route::get('/comptes/email/{email}/pseudo/{pseudo}', [PrivateController::class, 'comptes'])->name('comptes.email.pseudo');
-    Route::get('/comptes/name/{name}/email/{email}/pseudo/{pseudo}', [PrivateController::class, 'comptes'])->name('comptes.name.email.pseudo');
+    Route::get('/comptes/name/{name}', [PrivateController::class, 'comptesName'])->name('comptes.name');
+    Route::get('/comptes/email/{email}', [PrivateController::class, 'comptesEmail'])->name('comptes.email');
+    Route::get('/comptes/pseudo/{pseudo}', [PrivateController::class, 'comptesPseudo'])->name('comptes.pseudo');
+    Route::get('/comptes/name/{name}/email/{email}', [PrivateController::class, 'comptesNameEmail'])->name('comptes.name.email');
+    Route::get('/comptes/name/{name}/pseudo/{pseudo}', [PrivateController::class, 'comptesNamePseudo'])->name('comptes.name.pseudo');
+    Route::get('/comptes/email/{email}/pseudo/{pseudo}', [PrivateController::class, 'comptesEmailPseudo'])->name('comptes.email.pseudo');
+    Route::get('/comptes/name/{name}/email/{email}/pseudo/{pseudo}', [PrivateController::class, 'comptesNameEmailPseudo'])->name('comptes.name.email.pseudo');
 
     /* Ajoute, modifie et supprime des comptes */
     Route::post('/compte/add', [PrivateController::class, 'addCompte'])->name('compte.add');

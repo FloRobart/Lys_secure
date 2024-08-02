@@ -36,7 +36,7 @@
 
         <!-- Nombre de compte -->
         <div class="rowCenterContainer">
-            <span class="normalText">Nombre d'investissement : <span class="normalTextBleuLogo font-bold">{{ $comptes->count() }}</span></span>
+            <span class="normalText">Nombre de compte : <span class="normalTextBleuLogo font-bold">{{ $comptes->count() }}</span></span>
         </div>
 
         <!-- Nombre d'email différents -->

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Ce fichier fait partie du projet Finance Dashboard
+ * Ce fichier fait partie du projet Account Manager
  * Copyright (C) 2024 Floris Robart <florobart.github.com>
  */
 
@@ -12,7 +12,6 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     protected $connection = 'account_manager';
-    protected $table = 'accounts';
 
     /**
      * Run the migrations.

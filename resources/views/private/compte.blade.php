@@ -107,7 +107,12 @@
                             @endif
                             
                             <!-- Mot de passe -->
-                            <td class="tableCell">{{ $compte->password }}</td>
+                            <td class="tableCell tooltip">
+                                <button title="copié le mot de passe" class="link" onclick="copyToClipboard('{{ str_replace('\'', '\\\'', $compte->password) }}', '{{ $compte->id }}')" onmouseout="tooltip({{ $compte->id }})">
+                                    <span class="tooltiptext" id="myTooltip_{{ $compte->id }}">Copier le mot de passe</span>
+                                    {{ $compte->password }}
+                                </button>
+                            </td>
                             
                             <!-- Pseudo -->
                             @if (str_contains(strtolower(URL::current()), 'pseudo'))
@@ -175,7 +180,9 @@
 <script src="{{ asset('js/showForm.js') }}"></script>
 <script>
     oldId = 0;
-    /* Fonction pour modifier une épargne */
+    /**
+     * Permet de modifier un compte
+     */
     function editCompte(name, email, password, pseudo, id) {
         /* Affichage du formulaire */
         hidden = document.getElementById('form').classList.contains('hidden');
@@ -200,5 +207,73 @@
 
         oldId = id;
     }
+
+    /**
+     * Copie le texte passé en paramètre dans le presse-papier du système quand il n'y a pas de connexion sécurisée (HTTPS)
+     */
+    const unsecuredCopyToClipboard = (text, id) => { const textArea = document.createElement("textarea"); textArea.value=text; document.body.appendChild(textArea); textArea.focus();textArea.select(); try{document.execCommand('copy')}catch(err){console.error('Unable to copy to clipboard',err)}document.body.removeChild(textArea); document.getElementById("myTooltip_" + id).innerHTML = "Mot de passe copié";};
+
+    /**
+     * Copies the text passed as param to the system clipboard
+     * Check if using HTTPS and navigator.clipboard is available
+     * Then uses standard clipboard API, otherwise uses fallback
+    */
+    const copyToClipboard = (content, id) => {
+        if (window.isSecureContext && navigator.clipboard) {
+            navigator.clipboard.writeText(content);
+        } else {
+            unsecuredCopyToClipboard(content, id);
+        }
+
+        document.getElementById("myTooltip_" + id).innerHTML = "Mot de passe copié";
+    };
+
+    function tooltip(id)
+    {
+        document.getElementById("myTooltip_" + id).innerHTML = "Copier le mot de passe";
+    }
 </script>
+@endsection
+
+@section('styles')
+<style>
+/* Style pour le message lors de la copie du mot de passe */
+.tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 140px;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px;
+    position: absolute;
+    z-index: 1;
+    bottom: 150%;
+    left: 50%;
+    margin-left: -75px;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.tooltip .tooltiptext::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #555 transparent transparent transparent;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}
+</style>
 @endsection

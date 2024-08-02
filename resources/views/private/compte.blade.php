@@ -29,7 +29,7 @@
 
 
 <!-- Contenu de la page -->
-<section class="colCenterContainer gap-y-10 bgPage mb-[21rem] min-[400px]:mb-68 md:mb-[30rem] lg:mb-[21rem] xl:mb-52 mt-6">
+<section class="colCenterContainer space-y-12 mt-4 px-6 mb-32 bgPage">
     <!-- Information générale -->
     <div class="colCenterContainer">
         <h2 class="w-full bigTextBleuLogo text-center mb-3">Information générale</h2>
@@ -59,7 +59,7 @@
                     <th class="tableCell" title="Trier par ordre @if ($order == 'asc') alphabétique @else anti-alphabétique @endif de l'email"><a href="{{ URL::current() . '?sort=email&order=' . $order }}">Email</a></th>
                     <th class="tableCell">Mot de passe</th>
                     <th class="tableCell" title="Trier par ordre @if ($order == 'asc') alphabétique @else anti-alphabétique @endif du pseudo"><a href="{{ URL::current() . '?sort=pseudo&order=' . $order }}">Pseudo</a></th>
-                    <th class="tableCell" title="Trier par ordre chronologique"><a href="{{ URL::current() . '?sort=created_at&order=' . $order }}">Actions</a></th>
+                    <th class="tableCell max-sm:hidden" title="Trier par ordre chronologique"><a href="{{ URL::current() . '?sort=created_at&order=' . $order }}">Actions</a></th>
                 </tr>
             </thead>
 
@@ -129,7 +129,7 @@
                             @endif
 
                             <!-- Actions -->
-                            <td class="smallRowCenterContainer px-1 min-[460px]:px-2 min-[500px]:px-4 py-2">
+                            <td class="smallRowCenterContainer px-1 min-[460px]:px-2 min-[500px]:px-4 py-2 max-sm:hidden">
                                 <!-- Modifier -->
                                 <button onclick="editCompte('{{ str_replace('\'', '\\\'', $compte->name) }}', '{{ str_replace('\'', '\\\'', $compte->email) }}', '{{ str_replace('\'', '\\\'', $compte->password) }}', '{{ str_replace('\'', '\\\'', $compte->pseudo) }}', '{{ $compte->id }}')" class="smallRowCenterContainer w-fit smallTextReverse font-bold bgBleuLogo hover:bgBleuFonce focus:normalScale rounded-lg min-[500px]:rounded-xl py-1 px-1 min-[500px]:px-2">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="tinySizeIcons">

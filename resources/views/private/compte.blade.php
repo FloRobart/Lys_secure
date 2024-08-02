@@ -192,8 +192,23 @@
 
     <!-- Options supplémentaires -->
     <div class="colCenterContainer pt-32">
-        <button type="button" class="buttonForm">Sauvegarder les comptes dans un fichier texte</button>
-        <button type="button" class="buttonForm mt-8">Charger les comptes depuis un fichier texte</button>
+        @php $param = []; @endphp
+        @if (str_contains(strtolower(URL::current()), 'name'  ))
+            @php
+                $url = parse_url(URL::current())['path'] ?? null;
+                if ($url != null) {
+                    $urlArray = explode('/', $url);
+                    $url_name = array_slice($urlArray, 0, (array_search('name', $urlArray) == false ? count($urlArray) : (array_search('name', $urlArray) + 2)))[3];
+                }
+
+                $param  = ['name'   => $url_name  ];
+            @endphp
+        @endif
+        @if (str_contains(strtolower(URL::current()), 'email' )) @php $param += ['email'  => $comptes->first()->email ]; @endphp @endif
+        @if (str_contains(strtolower(URL::current()), 'pseudo')) @php $param += ['pseudo' => $comptes->first()->pseudo]; @endphp @endif
+        
+        <a href="{{ route('comptes.download', $param) }}" class="buttonForm">Sauvegarder les comptes dans un fichier texte</a>
+        <a href="{{ route('comptes.upload') }}" class="buttonForm mt-8">Charger les comptes depuis un fichier texte</a>
     </div>
 </section>
 @endsection

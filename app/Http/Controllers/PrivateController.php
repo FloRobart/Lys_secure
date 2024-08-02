@@ -17,6 +17,9 @@ class PrivateController extends Controller
     private const options = 0; /* Utilisation de l'option 0 */
     private const encryption_iv = '1234567891011121'; /* Vecteur d'initialisation */
 
+
+
+
     /*=========*/
     /* Accueil */
     /*=========*/
@@ -33,6 +36,11 @@ class PrivateController extends Controller
         return view('private.accueil');
     }
 
+
+
+    /*------------------*/
+    /* Gestion des clés */
+    /*------------------*/
     /**
      * Sauvegarde la clé de cryptage
      */
@@ -88,10 +96,15 @@ class PrivateController extends Controller
         return back()->with('error', 'Le mot de passe est incorect ❌.');
     }
 
+
+
+
     /*========*/
     /* Compte */
     /*========*/
+    /*-----------------------*/
     /* Affichage des comptes */
+    /*-----------------------*/
     /**
      * Affiche tous les comptes
      */
@@ -214,7 +227,10 @@ class PrivateController extends Controller
     }
 
 
+
+    /*---------------------*/
     /* Édition des comptes */
+    /*---------------------*/
     /**
      * Ajoute un compte
      */
@@ -353,6 +369,47 @@ class PrivateController extends Controller
         } else {
             return back()->with('error', 'Une erreur est survenue lors de la suppression du compte ❌.');
         }
+    }
+
+
+
+    /*-----------------------------*/
+    /* Téléchargements de fichiers */
+    /*-----------------------------*/
+    /**
+     * Télécharge le fichier des comptes
+     */
+    public function downloadComptes(Request $request)
+    {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        /* Récupération des paramètres de l'url */
+        $name = $request->query('name') ?? '';
+        $email = $request->query('email') ?? '';
+        $pseudo = $request->query('pseudo') ?? '';
+
+        /* Récupération des comptes */
+        $comptes = PrivateController::getComptes($name, $email, $pseudo);
+
+        /* Création du fichier */
+        $content = '| Nom du compte | Identifiant / Email | Mot de passe | Pseudo |' . "\n";
+        $content = $content . '|:-------------:|:------------------:|:------------------:|:------------------:|' . "\n";
+        foreach ($comptes as $compte) {
+            $content = $content . '| ' . $compte->name . ' | ' . $compte->email . ' | ' . $compte->password . ' | ' . $compte->pseudo . ' |' . "\n";
+        }
+
+        /* Téléchargement du fichier */
+        return response($content)
+            ->header('Content-Type', 'text/plain')
+            ->header('Content-Disposition', 'attachment; filename=mes_comptes.md');
+    }
+
+    /**
+     * Charger le fichier des comptes
+     */
+    public function uploadComptes(Request $request)
+    {
+        return back()->with('error', 'Cette fonctionnalité n\'est pas encore disponible ❌.');
     }
 
 

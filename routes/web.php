@@ -57,6 +57,13 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/compte/add', [PrivateController::class, 'addCompte'])->name('compte.add');
     Route::post('/compte/edit', [PrivateController::class, 'editCompte'])->name('compte.edit');
     Route::get('/compte/remove/{id}', [PrivateController::class, 'removeCompte'])->name('compte.remove');
+
+    /* Route pour la recherche de comptes */
+    Route::post('/comptes/search', [PrivateController::class, 'searchComptes'])->name('comptes.search');
+
+    /* Route liée au téléchargement des comptes */
+    Route::get('/comptes/mes_comptes.md', [PrivateController::class, 'downloadComptes'])->name('comptes.download');
+    Route::post('/comptes/upload', [PrivateController::class, 'uploadComptes'])->name('comptes.upload');
 });
 
 /* Route pour la redirection en cas de mauvaise authentification */

@@ -247,7 +247,7 @@ class PrivateController extends Controller
         ]);
 
         /* Message de confirmation */
-        if (Account::where('name', 'like', $request->name)->where('email', $request->email)->where('password', $request->password)->first()) {
+        if (Account::where('name', $request->name)->where('email', $request->email)->first()) {
             $message = 'Attention, un compte similaire éxiste déjà. 🤔';
         } else {
             $message = '';

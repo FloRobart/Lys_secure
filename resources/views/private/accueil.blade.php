@@ -37,8 +37,8 @@
                 <div class="colCenterContainer">
                     <livewire:password-input :confirmation="'false'" :newPassword="'false'" />
                 </div>
-                <div class="rowCenterContainer">
-                    <button type="submit" class="normalButton">Valider</button>
+                <div class="rowCenterContainer mt-6">
+                    <button type="submit" class="buttonForm">Valider</button>
                 </div>
             </form>
         </div>

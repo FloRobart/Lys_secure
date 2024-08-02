@@ -51,7 +51,7 @@
 
         <!-- Nombre d'email différents -->
         <div class="rowCenterContainer">
-            <span class="normalText">Nombre de compte Gmail différents : <span class="normalTextBleuLogo font-bold">{{ $comptes->where('name', 'Gmail')->count() }}</span></span>
+            <span class="normalText">Nombre de compte Gmail différents : <span class="normalTextBleuLogo font-bold">{{ $comptes->where('name', 'Gmail')->unique('email')->count() }}</span></span>
         </div>
 
         <!-- Nombre de pseudo différents -->
@@ -73,7 +73,7 @@
                     <th class="tableCell" title="Trier par ordre @if ($order == 'asc') alphabétique @else anti-alphabétique @endif du nom"><a href="{{ URL::current() . '?sort=name&order=' . $order }}">Nom du compte</a></th>
                     <th class="tableCell" title="Trier par ordre @if ($order == 'asc') alphabétique @else anti-alphabétique @endif de l'email"><a href="{{ URL::current() . '?sort=email&order=' . $order }}">Identifiant / Email</a></th>
                     <th class="tableCell">Mot de passe</th>
-                    <th class="tableCell" title="Trier par ordre @if ($order == 'asc') alphabétique @else anti-alphabétique @endif du pseudo"><a href="{{ URL::current() . '?sort=pseudo&order=' . $order }}">Pseudo</a></th>
+                    <th class="tableCell max-sm:hidden" title="Trier par ordre @if ($order == 'asc') alphabétique @else anti-alphabétique @endif du pseudo"><a href="{{ URL::current() . '?sort=pseudo&order=' . $order }}">Pseudo</a></th>
                     <th class="tableCell max-sm:hidden" title="Trier par ordre chronologique"><a href="{{ URL::current() . '?sort=created_at&order=' . $order }}">Actions</a></th>
                 </tr>
             </thead>
@@ -131,19 +131,19 @@
                             
                             <!-- Pseudo -->
                             @if (str_contains(strtolower(URL::current()), 'pseudo'))
-                                <td class="tableCell"><a title="Afficher les comptes avec le pseudo {{ $compte->pseudo }}" href="{{ route('comptes.pseudo', ['pseudo' => $compte->pseudo]) }}" class="link">{{ $compte->pseudo }}</a></td>
+                                <td class="tableCell max-sm:hidden"><a title="Afficher les comptes avec le pseudo {{ $compte->pseudo }}" href="{{ route('comptes.pseudo', ['pseudo' => $compte->pseudo]) }}" class="link">{{ $compte->pseudo }}</a></td>
                             @else
                                 @if (str_contains(strtolower(URL::current()), 'email'))
                                     @if (str_contains(strtolower(URL::current()), 'name'))
-                                        <td class="tableCell" title="Afficher les comptes {{ $compte->name }} lié au mail {{ $compte->email }} avec le pseudo {{ $compte->pseudo }}"><a href="{{ route('comptes.name.email.pseudo', ['name' => $compte->name, 'email' => $compte->email, 'pseudo' => $compte->pseudo]) }}" class="link">{{ $compte->pseudo }}</a></td>
+                                        <td class="tableCell max-sm:hidden" title="Afficher les comptes {{ $compte->name }} lié au mail {{ $compte->email }} avec le pseudo {{ $compte->pseudo }}"><a href="{{ route('comptes.name.email.pseudo', ['name' => $compte->name, 'email' => $compte->email, 'pseudo' => $compte->pseudo]) }}" class="link">{{ $compte->pseudo }}</a></td>
                                     @else
-                                        <td class="tableCell" title="Afficher les comptes lié au mail {{ $compte->email }} et avec le pseudo {{ $compte->pseudo }}"><a href="{{ route('comptes.email.pseudo', ['email' => $compte->email, 'pseudo' => $compte->pseudo]) }}" class="link">{{ $compte->pseudo }}</a></td>
+                                        <td class="tableCell max-sm:hidden" title="Afficher les comptes lié au mail {{ $compte->email }} et avec le pseudo {{ $compte->pseudo }}"><a href="{{ route('comptes.email.pseudo', ['email' => $compte->email, 'pseudo' => $compte->pseudo]) }}" class="link">{{ $compte->pseudo }}</a></td>
                                     @endif
                                 @else
                                     @if (str_contains(strtolower(URL::current()), 'name'))
-                                        <td class="tableCell" title="Afficher les comptes {{ $compte->name }} avec le pseudo {{ $compte->pseudo }}"><a href="{{ route('comptes.name.pseudo', ['name' => $compte->name, 'pseudo' => $compte->pseudo]) }}" class="link">{{  $compte->pseudo}}</a></td>
+                                        <td class="tableCell max-sm:hidden" title="Afficher les comptes {{ $compte->name }} avec le pseudo {{ $compte->pseudo }}"><a href="{{ route('comptes.name.pseudo', ['name' => $compte->name, 'pseudo' => $compte->pseudo]) }}" class="link">{{  $compte->pseudo}}</a></td>
                                     @else
-                                        <td class="tableCell" title="Afficher les comptes avec le pseudo {{ $compte->pseudo }}"><a href="{{ route('comptes.pseudo', ['pseudo' => $compte->pseudo]) }}" class="link">{{ $compte->pseudo }}</a></td>
+                                        <td class="tableCell max-sm:hidden" title="Afficher les comptes avec le pseudo {{ $compte->pseudo }}"><a href="{{ route('comptes.pseudo', ['pseudo' => $compte->pseudo]) }}" class="link">{{ $compte->pseudo }}</a></td>
                                     @endif
                                 @endif
                             @endif
@@ -158,7 +158,7 @@
                                 </button>
 
                                 <!-- Supprimer -->
-                                <a href="{{ route('compte.remove', $compte->id) }}" onclick="return confirm('Êtes-vous sûr de vouloir supprimer le compte {{ str_replace('\'', '\\\'', $compte->name) }} ? Cette action est irréversible.')" title="Supprimer ce compte" class="smallRowCenterContainer w-fit smallTextReverse font-bold bgError hover:bgErrorFonce focus:normalScale rounded-lg min-[500px]:rounded-xl py-1 px-1 min-[500px]:px-2 ml-1 min-[500px]:ml-2">
+                                <a href="{{ route('compte.remove', $compte->id) }}" onclick="return confirm('Êtes-vous sûr de vouloir supprimer le compte {{ str_replace('\'', '\\\'', $compte->name) }} associé à l\'email {{ str_replace('\'', '\\\'', $compte->email) }} ? Cette action est irréversible.')" title="Supprimer ce compte" class="smallRowCenterContainer w-fit smallTextReverse font-bold bgError hover:bgErrorFonce focus:normalScale rounded-lg min-[500px]:rounded-xl py-1 px-1 min-[500px]:px-2 ml-1 min-[500px]:ml-2">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="tinySizeIcons">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
                                     </svg>

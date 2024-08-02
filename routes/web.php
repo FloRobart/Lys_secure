@@ -21,9 +21,13 @@ Route::middleware(['auth'])->group(function () {
     /*=========*/
     /* Accueil */
     /*=========*/
-    /* Route vers l'accueil du dashboard */
-    Route::get('/', [PrivateController::class, 'comptes'])->name('accueil');
-    Route::get('/accueil', [PrivateController::class, 'comptes'])->name('accueil');
+    /* Route vers l'accueil du gestionnaire */
+    Route::get('/', [PrivateController::class, 'accueil'])->name('accueil');
+    Route::get('/accueil', [PrivateController::class, 'accueil'])->name('accueil');
+
+    /* Route pour la clé de cryptage */
+    Route::post('/key/save', [PrivateController::class, 'saveKey'])->name('key.save');
+    Route::post('/key/check', [PrivateController::class, 'checkKey'])->name('key.check');
 
     /* Route vers l'accueil général du serveur */
     Route::get('/accueil/general', function () { return redirect('http://192.168.1.250:2000/private/accueil'); })->name('accueil.general');

@@ -7,14 +7,86 @@ namespace App\Http\Controllers;
  */
 
 use App\Models\Account;
+use App\Models\Key;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Hash;
 
 class PrivateController extends Controller
 {
     private const ciphering = "AES-128-CTR"; /* Utilisation de l'algorithme de chiffrement AES-128-CTR */
     private const options = 0; /* Utilisation de l'option 0 */
     private const encryption_iv = '1234567891011121'; /* Vecteur d'initialisation */
+
+    /*=========*/
+    /* Accueil */
+    /*=========*/
+    /**
+     * Affiche l'accueil
+     */
+    public function accueil()
+    {
+        $key = Key::where('user_id', auth()->user()->id)->first();
+        if ($key) {
+            session(['key_exist' => filter_var(true, FILTER_VALIDATE_BOOLEAN)]);
+        }
+
+        return view('private.accueil');
+    }
+
+    /**
+     * Sauvegarde la clé de cryptage
+     */
+    public function saveKey(Request $request)
+    {
+        /* Validation des données */
+        $request->validate([
+            'password' => 'required|string|min:1|max:255',
+        ], [
+            'password.required' => 'Le mot de passe est obligatoire.',
+            'password.string' => 'Le mot de passe doit être une chaîne de caractères.',
+            'password.min' => 'Le mot de passe doit contenir au moins 1 caractère.',
+            'password.max' => 'Le mot de passe ne doit pas dépasser 255 caractères.',
+        ]);
+
+        /* Sauvegarde de la clé de cryptage */
+        $key = new Key();
+        $key->user_id = auth()->user()->id;
+        $key->key = Hash::make($request->password);
+
+        /* Enregistrement de la clé de cryptage dans la session */
+        session(['key' => $request->password]);
+
+        if ($key->save()) {
+            return back()->with('success', 'La clé de cryptage a été sauvegardée avec succès 👍.');
+        } else {
+            return back()->with('error', 'Une erreur est survenue lors de la sauvegarde de la clé de cryptage ❌.');
+        }
+    }
+
+    /**
+     * Vérifie la clé de cryptage
+     */
+    public function checkKey(Request $request)
+    {
+        /* Validation des données */
+        $request->validate([
+            'password' => 'required|string|min:1|max:255',
+        ], [
+            'password.required' => 'Le mot de passe est obligatoire.',
+            'password.string' => 'Le mot de passe doit être une chaîne de caractères.',
+            'password.min' => 'Le mot de passe doit contenir au moins 1 caractère.',
+            'password.max' => 'Le mot de passe ne doit pas dépasser 255 caractères.',
+        ]);
+
+        /* Vérification de la clé de cryptage */
+        $key = Key::where('user_id', auth()->user()->id)->first();
+        if ($key && Hash::check($request->password, $key->key)) {
+            session(['key' => $request->password]);
+            return redirect()->route('comptes');
+        }
+
+        return back()->with('error', 'Le mot de passe est incorect ❌.');
+    }
 
     /*========*/
     /* Compte */
@@ -193,7 +265,7 @@ class PrivateController extends Controller
         $compte->pseudo = $request->pseudo;
         
         /* Chiffrement du mot de passe */
-        $encryption_key = "GeeksforGeeks"; /* Clé de chiffrement */
+        $encryption_key = session()->get('key'); /* Clé de chiffrement */
         $compte->password = openssl_encrypt($request->password, PrivateController::ciphering, $encryption_key, PrivateController::options, PrivateController::encryption_iv);
         
         
@@ -245,8 +317,11 @@ class PrivateController extends Controller
         $compte = Account::find($request->id);
         $compte->name = ucfirst($request->name);
         $compte->email = $request->email;
-        $compte->password = $request->password;
         $compte->pseudo = $request->pseudo;
+
+        /* Chiffrement du mot de passe */
+        $encryption_key = session()->get('key'); /* Clé de chiffrement */
+        $compte->password = openssl_encrypt($request->password, PrivateController::ciphering, $encryption_key, PrivateController::options, PrivateController::encryption_iv);
 
         /* Sauvegarde du compte */
         if ($compte->save()) {
@@ -314,7 +389,7 @@ class PrivateController extends Controller
         }
 
         /* décriptage des mots de passe */
-        $encryption_key = "GeeksforGeeks"; /* Clé de chiffrement */
+        $encryption_key = session()->get('key');
         foreach ($comptes as $compte) {
             $compte->password = openssl_decrypt($compte->password, PrivateController::ciphering, $encryption_key, PrivateController::options, PrivateController::encryption_iv);
         }

@@ -409,7 +409,7 @@ class PrivateController extends Controller
      */
     public function uploadComptes(Request $request)
     {
-        return back()->with('error', 'Cette fonctionnalité n\'est pas encore disponible ❌.');
+        return back()->with('error', 'Cette fonctionnalité n\'est pas encore disponible.');
     }
 
 

@@ -177,6 +177,10 @@ class PrivateController extends Controller
             $message = '';
         }
 
+        if (!Account::where('email', $request->email)->first()) {
+            $message = $message . 'C\'est la première fois que vous utilisez cet email, vérifiez bien qu\'il est correct. 😉';
+        }
+
         /* Ajout de l'compte */
         $compte = new Account();
         $compte->user_id = auth()->user()->id;

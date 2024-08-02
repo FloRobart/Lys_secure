@@ -70,7 +70,7 @@
                         <tr class="tableRow smallText text-center">
                             <!-- Nom du compte -->
                             @if (str_contains(strtolower(URL::current()), 'name'))
-                                <td class="tableCell">{{ $compte->name }}</td>
+                                <td class="tableCell"><a href="{{ route('comptes.name', ['name' => $compte->name]) }}" class="link">{{ $compte->name }}</a></td>
                             @else
                                 @if (str_contains(strtolower(URL::current()), 'email'))
                                     @if (str_contains(strtolower(URL::current()), 'pseudo'))
@@ -89,7 +89,7 @@
                             
                             <!-- Email -->
                             @if (str_contains(strtolower(URL::current()), 'email'))
-                                <td class="tableCell">{{ $compte->email }}</td>
+                                <td class="tableCell"><a href="{{ route('comptes.email', ['email' => $compte->email]) }}" class="link">{{ $compte->email }}</a></td>
                             @else
                                 @if (str_contains(strtolower(URL::current()), 'name'))
                                     @if (str_contains(strtolower(URL::current()), 'pseudo'))
@@ -111,7 +111,7 @@
                             
                             <!-- Pseudo -->
                             @if (str_contains(strtolower(URL::current()), 'pseudo'))
-                                <td class="tableCell">{{ $compte->pseudo }}</td>
+                                <td class="tableCell"><a href="{{ route('comptes.pseudo', ['pseudo' => $compte->pseudo]) }}" class="link">{{ $compte->pseudo }}</a>}</td>
                             @else
                                 @if (str_contains(strtolower(URL::current()), 'email'))
                                     @if (str_contains(strtolower(URL::current()), 'name'))

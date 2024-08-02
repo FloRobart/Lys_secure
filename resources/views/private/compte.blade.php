@@ -180,7 +180,8 @@
                     <input id="password" name="password" required type="text" placeholder="Mot de passe"  class="w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
                     <input id="pseudo"   name="pseudo"   required type="text" placeholder="Pseudo"        class="w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
                 </div>
-                <button id="formButton" class="buttonForm mx-2 min-[500px]:mx-4 my-2">Ajouter</button>
+                <button type="button" class="buttonForm" onclick="passwordGenerator()">Générer un mot de passe</button>
+                <button type="submit" id="formButton" class="buttonForm mx-2 min-[500px]:mx-4 my-2">Ajouter</button>
                 <div class="w-full tableRowTop"></div>
             </div>
         </form>
@@ -199,6 +200,7 @@
 
 @section('scripts')
 <script src="{{ asset('js/showForm.js') }}"></script>
+<script src="{{ asset('js/passwordGenerator.js') }}"></script>
 <script>
     oldId = 0;
     /**

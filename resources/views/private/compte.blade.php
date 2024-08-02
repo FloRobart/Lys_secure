@@ -201,7 +201,7 @@
                     $url_name = array_slice($urlArray, 0, (array_search('name', $urlArray) == false ? count($urlArray) : (array_search('name', $urlArray) + 2)))[3];
                 }
 
-                $param  = ['name'   => $url_name  ];
+                $param = ['name' => $url_name];
             @endphp
         @endif
         @if (str_contains(strtolower(URL::current()), 'email' )) @php $param += ['email'  => $comptes->first()->email ]; @endphp @endif

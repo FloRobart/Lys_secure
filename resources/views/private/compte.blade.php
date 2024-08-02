@@ -192,8 +192,8 @@
 
     <!-- Options supplémentaires -->
     <div class="colCenterContainer pt-32">
-        <button class="buttonForm">Sauvegarder les comptes dans un fichier texte</button>
-        <button class="buttonForm mt-8">Charger les comptes depuis un fichier texte</button>
+        <button type="button" class="buttonForm">Sauvegarder les comptes dans un fichier texte</button>
+        <button type="button" class="buttonForm mt-8">Charger les comptes depuis un fichier texte</button>
     </div>
 </section>
 @endsection

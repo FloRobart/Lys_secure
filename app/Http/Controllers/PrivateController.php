@@ -377,7 +377,10 @@ class PrivateController extends Controller
         $comptes = Account::all()->where('user_id', auth()->user()->id);
 
         if ($name != '') {
-            $comptes = $comptes->where('name', $name);
+            /* Recherche des comptes qui contiennent le nom */
+            $comptes = $comptes->filter(function ($compte) use ($name) {
+                return str_contains($compte->name, $name);
+            });
         }
 
         if ($email != '') {

@@ -56,7 +56,4 @@ Route::middleware(['auth'])->group(function () {
 });
 
 /* Route pour la redirection en cas de mauvaise authentification */
-Route::get('/redirection', function () {
-    dd(auth());
-    // return redirect('http://192.168.1.250:2000/');
-})->name('login');
+Route::get('/redirection', function () { return redirect('http://192.168.1.250:2000/'); })->name('login');

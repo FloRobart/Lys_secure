@@ -373,6 +373,19 @@ class PrivateController extends Controller
 
 
 
+    /*----------------------*/
+    /* Recherche de comptes */
+    /*----------------------*/
+    /**
+     * Recupère les comptes correspondant à la recherche
+     */
+    public function searchComptes(Request $request)
+    {
+
+    }
+
+
+
     /*-----------------------------*/
     /* Téléchargements de fichiers */
     /*-----------------------------*/

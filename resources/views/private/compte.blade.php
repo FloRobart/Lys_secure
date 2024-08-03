@@ -64,7 +64,16 @@
     <livewire:horizontal-separation />
 
     <div class="colCenterContainer">
+        <!-- Titre du tableau -->
         <h2 class="w-full bigTextBleuLogo text-center mb-3">Mes différents comptes</h2>
+
+        <!-- Barre de recherche -->
+        <div class="rowStartContainer px-8 space-x-6 mt-4 mb-6">
+            <input class="inputForm" placeholder="Rechercher un compte">
+            <button class="buttonForm">Rechercher</button>
+        </div>
+
+        <!-- Tableau des comptes -->
         <table class="w-full mt-2">
             <!-- Entête du tableau -->
             <thead class="w-full">
@@ -73,7 +82,7 @@
                     <th class="tableCell" title="Trier par ordre @if ($order == 'asc') alphabétique @else anti-alphabétique @endif du nom"><a href="{{ URL::current() . '?sort=name&order=' . $order }}">Nom du compte</a></th>
                     <th class="tableCell" title="Trier par ordre @if ($order == 'asc') alphabétique @else anti-alphabétique @endif de l'email"><a href="{{ URL::current() . '?sort=email&order=' . $order }}">Identifiant / Email</a></th>
                     <th class="tableCell">Mot de passe</th>
-                    <th class="tableCell max-sm:hidden" title="Trier par ordre @if ($order == 'asc') alphabétique @else anti-alphabétique @endif du pseudo"><a href="{{ URL::current() . '?sort=pseudo&order=' . $order }}">Pseudo</a></th>
+                    <th class="tableCell max-md:hidden" title="Trier par ordre @if ($order == 'asc') alphabétique @else anti-alphabétique @endif du pseudo"><a href="{{ URL::current() . '?sort=pseudo&order=' . $order }}">Pseudo</a></th>
                     <th class="tableCell max-sm:hidden" title="Trier par ordre chronologique"><a href="{{ URL::current() . '?sort=created_at&order=' . $order }}">Actions</a></th>
                 </tr>
             </thead>
@@ -131,19 +140,19 @@
                             
                             <!-- Pseudo -->
                             @if (str_contains(strtolower(URL::current()), 'pseudo'))
-                                <td class="tableCell max-sm:hidden"><a title="Afficher les comptes avec le pseudo {{ $compte->pseudo }}" href="{{ route('comptes.pseudo', ['pseudo' => $compte->pseudo]) }}" class="link">{{ $compte->pseudo }}</a></td>
+                                <td class="tableCell max-md:hidden"><a title="Afficher les comptes avec le pseudo {{ $compte->pseudo }}" href="{{ route('comptes.pseudo', ['pseudo' => $compte->pseudo]) }}" class="link">{{ $compte->pseudo }}</a></td>
                             @else
                                 @if (str_contains(strtolower(URL::current()), 'email'))
                                     @if (str_contains(strtolower(URL::current()), 'name'))
-                                        <td class="tableCell max-sm:hidden" title="Afficher les comptes {{ $compte->name }} lié au mail {{ $compte->email }} avec le pseudo {{ $compte->pseudo }}"><a href="{{ route('comptes.name.email.pseudo', ['name' => $compte->name, 'email' => $compte->email, 'pseudo' => $compte->pseudo]) }}" class="link">{{ $compte->pseudo }}</a></td>
+                                        <td class="tableCell max-md:hidden" title="Afficher les comptes {{ $compte->name }} lié au mail {{ $compte->email }} avec le pseudo {{ $compte->pseudo }}"><a href="{{ route('comptes.name.email.pseudo', ['name' => $compte->name, 'email' => $compte->email, 'pseudo' => $compte->pseudo]) }}" class="link">{{ $compte->pseudo }}</a></td>
                                     @else
-                                        <td class="tableCell max-sm:hidden" title="Afficher les comptes lié au mail {{ $compte->email }} et avec le pseudo {{ $compte->pseudo }}"><a href="{{ route('comptes.email.pseudo', ['email' => $compte->email, 'pseudo' => $compte->pseudo]) }}" class="link">{{ $compte->pseudo }}</a></td>
+                                        <td class="tableCell max-md:hidden" title="Afficher les comptes lié au mail {{ $compte->email }} et avec le pseudo {{ $compte->pseudo }}"><a href="{{ route('comptes.email.pseudo', ['email' => $compte->email, 'pseudo' => $compte->pseudo]) }}" class="link">{{ $compte->pseudo }}</a></td>
                                     @endif
                                 @else
                                     @if (str_contains(strtolower(URL::current()), 'name'))
-                                        <td class="tableCell max-sm:hidden" title="Afficher les comptes {{ $compte->name }} avec le pseudo {{ $compte->pseudo }}"><a href="{{ route('comptes.name.pseudo', ['name' => $compte->name, 'pseudo' => $compte->pseudo]) }}" class="link">{{  $compte->pseudo}}</a></td>
+                                        <td class="tableCell max-md:hidden" title="Afficher les comptes {{ $compte->name }} avec le pseudo {{ $compte->pseudo }}"><a href="{{ route('comptes.name.pseudo', ['name' => $compte->name, 'pseudo' => $compte->pseudo]) }}" class="link">{{  $compte->pseudo}}</a></td>
                                     @else
-                                        <td class="tableCell max-sm:hidden" title="Afficher les comptes avec le pseudo {{ $compte->pseudo }}"><a href="{{ route('comptes.pseudo', ['pseudo' => $compte->pseudo]) }}" class="link">{{ $compte->pseudo }}</a></td>
+                                        <td class="tableCell max-md:hidden" title="Afficher les comptes avec le pseudo {{ $compte->pseudo }}"><a href="{{ route('comptes.pseudo', ['pseudo' => $compte->pseudo]) }}" class="link">{{ $compte->pseudo }}</a></td>
                                     @endif
                                 @endif
                             @endif

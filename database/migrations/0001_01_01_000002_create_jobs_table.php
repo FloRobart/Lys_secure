@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    protected $connection = 'finance_dashboard';
+    protected $connection = 'account_manager';
 
     /**
      * Run the migrations.

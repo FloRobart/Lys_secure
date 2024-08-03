@@ -278,7 +278,7 @@ class PrivateController extends Controller
         $compte->user_id = auth()->user()->id;
         $compte->name = ucfirst($request->name);
         $compte->email = $request->email;
-        $compte->pseudo = $request->pseudo;
+        $compte->pseudo = $request->pseudo ?? '-';
         
         /* Chiffrement du mot de passe */
         $encryption_key = session()->get('key'); /* Clé de chiffrement */
@@ -333,7 +333,7 @@ class PrivateController extends Controller
         $compte = Account::find($request->id);
         $compte->name = ucfirst($request->name);
         $compte->email = $request->email;
-        $compte->pseudo = $request->pseudo;
+        $compte->pseudo = $request->pseudo ?? '-';
 
         /* Chiffrement du mot de passe */
         $encryption_key = session()->get('key'); /* Clé de chiffrement */

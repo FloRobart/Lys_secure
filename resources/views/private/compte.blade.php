@@ -83,7 +83,7 @@
                     <th class="tableCell" title="Trier par ordre @if ($order == 'asc') alphabétique @else anti-alphabétique @endif de l'email"><a href="{{ URL::current() . '?sort=email&order=' . $order }}">Identifiant / Email</a></th>
                     <th class="tableCell">Mot de passe</th>
                     <th class="tableCell max-md:hidden" title="Trier par ordre @if ($order == 'asc') alphabétique @else anti-alphabétique @endif du pseudo"><a href="{{ URL::current() . '?sort=pseudo&order=' . $order }}">Pseudo</a></th>
-                    <th class="tableCell max-sm:hidden" title="Trier par ordre chronologique"><a href="{{ URL::current() . '?sort=created_at&order=' . $order }}">Actions</a></th>
+                    <th class="tableCell max-md:hidden" title="Trier par ordre chronologique"><a href="{{ URL::current() . '?sort=created_at&order=' . $order }}">Actions</a></th>
                 </tr>
             </thead>
 
@@ -131,7 +131,7 @@
                             @endif
                             
                             <!-- Mot de passe -->
-                            <td class="tableCell tooltip">
+                            <td class="tableCell tooltip md:mt-[-18px] lg:mt-[-25px] xl:mt-[-30px]">
                                 <button title="copier le mot de passe" class="link" onclick="copyToClipboard('{{ str_replace('\'', '\\\'', $compte->password) }}', '{{ $compte->id }}')" onmouseout="tooltip({{ $compte->id }})">
                                     <span class="tooltiptext" id="myTooltip_{{ $compte->id }}">Copier le mot de passe</span>
                                     {{ $compte->password }}
@@ -158,7 +158,7 @@
                             @endif
 
                             <!-- Actions -->
-                            <td class="smallRowCenterContainer px-1 min-[460px]:px-2 min-[500px]:px-4 py-2 max-sm:hidden">
+                            <td class="smallRowCenterContainer px-1 min-[460px]:px-2 min-[500px]:px-4 py-2 max-md:hidden">
                                 <!-- Modifier -->
                                 <button onclick="editCompte('{{ str_replace('\'', '\\\'', $compte->name) }}', '{{ str_replace('\'', '\\\'', $compte->email) }}', '{{ str_replace('\'', '\\\'', $compte->password) }}', '{{ str_replace('\'', '\\\'', $compte->pseudo) }}', '{{ $compte->id }}')" title="Modifier ce compte" class="smallRowCenterContainer w-fit smallTextReverse font-bold bgBleuLogo hover:bgBleuFonce focus:normalScale rounded-lg min-[500px]:rounded-xl py-1 px-1 min-[500px]:px-2">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="tinySizeIcons">
@@ -187,7 +187,7 @@
                     <input id="name"     name="name"     required type="text" placeholder="Nom du compte" class="w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
                     <input id="email"    name="email"    required type="text" placeholder="Email"         class="w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
                     <input id="password" name="password" required type="text" placeholder="Mot de passe"  class="w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
-                    <input id="pseudo"   name="pseudo"   required type="text" placeholder="Pseudo"        class="w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
+                    <input id="pseudo"   name="pseudo"            type="text" placeholder="Pseudo"        class="w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
                 </div>
                 <button type="button" class="buttonForm" onclick="passwordGenerator()">Générer un mot de passe</button>
                 <button type="submit" id="formButton" class="buttonForm mx-2 min-[500px]:mx-4 my-2">Ajouter</button>
@@ -305,7 +305,9 @@
 
     .tooltip .tooltiptext {
         visibility: hidden;
-        width: 140px;
+        width: 100px;
+        margin-left: -50px;
+        @media (min-width: 768px) { width: 300px; margin-left: -150px; }
         background-color: #555;
         color: #fff;
         text-align: center;
@@ -315,7 +317,6 @@
         z-index: 1;
         bottom: 150%;
         left: 50%;
-        margin-left: -75px;
         opacity: 0;
         transition: opacity 0.3s;
     }

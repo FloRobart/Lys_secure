@@ -30,13 +30,13 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/key/check', [PrivateController::class, 'checkKey'])->name('key.check');
 
     /* Route vers l'accueil général du serveur */
-    Route::get('/accueil/general', function () { return redirect('http://192.168.1.250:2000/private/accueil'); })->name('accueil.general');
+    Route::get('/accueil/general', function () { return redirect('<IP Home Server Maison>private/accueil'); })->name('accueil.general');
 
 
     /*--------*/
     /* Profil */
     /*--------*/
-    Route::get('/profil', function () { return redirect('http://192.168.1.250:2000/profil'); })->name('profil');
+    Route::get('/profil', function () { return redirect('<IP Home Server Maison>profil'); })->name('profil');
 
 
 
@@ -64,4 +64,4 @@ Route::middleware(['auth'])->group(function () {
 });
 
 /* Route pour la redirection en cas de mauvaise authentification */
-Route::get('/redirection', function () { return redirect('http://192.168.1.250:2000/'); })->name('login');
+Route::get('/redirection', function () { return redirect('<IP Home Server Maison>'); })->name('login');

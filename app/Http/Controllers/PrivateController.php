@@ -114,9 +114,11 @@ class PrivateController extends Controller
 
         $sort = $request->query('sort') ?? 'created_at';
         $order = $request->query('order') ?? 'desc';
+        $search = $request->query('search') ?? '';
 
         /* Récupération des comptes */
         $comptes = PrivateController::getComptes('', '', '', $sort, $order);
+        if ($search != '') { $comptes = PrivateController::getComptesSearch($comptes, $search, $sort, $order); }
 
         return view('private.compte', compact('comptes'));
     }
@@ -130,8 +132,11 @@ class PrivateController extends Controller
 
         $sort = $request->query('sort') ?? 'created_at';
         $order = $request->query('order') ?? 'desc';
+        $search = $request->query('search') ?? '';
 
+        /* Récupération des comptes */
         $comptes = PrivateController::getComptes($name, '', '', $sort, $order);
+        if ($search != '') { $comptes = PrivateController::getComptesSearch($comptes, $search, $sort, $order); }
 
         return view('private.compte', compact('comptes'));
     }
@@ -145,8 +150,11 @@ class PrivateController extends Controller
 
         $sort = $request->query('sort') ?? 'created_at';
         $order = $request->query('order') ?? 'desc';
+        $search = $request->query('search') ?? '';
 
+        /* Récupération des comptes */
         $comptes = PrivateController::getComptes('', $email, '', $sort, $order);
+        if ($search != '') { $comptes = PrivateController::getComptesSearch($comptes, $search, $sort, $order); }
 
         return view('private.compte', compact('comptes'));
     }
@@ -160,8 +168,11 @@ class PrivateController extends Controller
 
         $sort = $request->query('sort') ?? 'created_at';
         $order = $request->query('order') ?? 'desc';
+        $search = $request->query('search') ?? '';
 
+        /* Récupération des comptes */
         $comptes = PrivateController::getComptes('', '', $pseudo, $sort, $order);
+        if ($search != '') { $comptes = PrivateController::getComptesSearch($comptes, $search, $sort, $order); }
 
         return view('private.compte', compact('comptes'));
     }
@@ -175,8 +186,11 @@ class PrivateController extends Controller
 
         $sort = $request->query('sort') ?? 'created_at';
         $order = $request->query('order') ?? 'desc';
+        $search = $request->query('search') ?? '';
 
+        /* Récupération des comptes */
         $comptes = PrivateController::getComptes($name, $email, '', $sort, $order);
+        if ($search != '') { $comptes = PrivateController::getComptesSearch($comptes, $search, $sort, $order); }
 
         return view('private.compte', compact('comptes'));
     }
@@ -190,8 +204,11 @@ class PrivateController extends Controller
 
         $sort = $request->query('sort') ?? 'created_at';
         $order = $request->query('order') ?? 'desc';
+        $search = $request->query('search') ?? '';
 
+        /* Récupération des comptes */
         $comptes = PrivateController::getComptes($name, '', $pseudo, $sort, $order);
+        if ($search != '') { $comptes = PrivateController::getComptesSearch($comptes, $search, $sort, $order); }
 
         return view('private.compte', compact('comptes'));
     }
@@ -205,8 +222,11 @@ class PrivateController extends Controller
 
         $sort = $request->query('sort') ?? 'created_at';
         $order = $request->query('order') ?? 'desc';
+        $search = $request->query('search') ?? '';
 
+        /* Récupération des comptes */
         $comptes = PrivateController::getComptes('', $email, $pseudo, $sort, $order);
+        if ($search != '') { $comptes = PrivateController::getComptesSearch($comptes, $search, $sort, $order); }
 
         return view('private.compte', compact('comptes'));
     }
@@ -220,8 +240,11 @@ class PrivateController extends Controller
 
         $sort = $request->query('sort') ?? 'created_at';
         $order = $request->query('order') ?? 'desc';
+        $search = $request->query('search') ?? '';
 
+        /* Récupération des comptes */
         $comptes = PrivateController::getComptes($name, $email, $pseudo, $sort, $order);
+        if ($search != '') { $comptes = PrivateController::getComptesSearch($comptes, $search, $sort, $order); }
 
         return view('private.compte', compact('comptes'));
     }
@@ -277,7 +300,7 @@ class PrivateController extends Controller
         $compte = new Account();
         $compte->user_id = auth()->user()->id;
         $compte->name = ucfirst($request->name);
-        $compte->email = $request->email;
+        $compte->email = strtolower($request->email);
         $compte->pseudo = $request->pseudo ?? '-';
         
         /* Chiffrement du mot de passe */
@@ -332,7 +355,7 @@ class PrivateController extends Controller
         /* Modification de l'compte */
         $compte = Account::find($request->id);
         $compte->name = ucfirst($request->name);
-        $compte->email = $request->email;
+        $compte->email = strtolower($request->email);
         $compte->pseudo = $request->pseudo ?? '-';
 
         /* Chiffrement du mot de passe */
@@ -373,19 +396,6 @@ class PrivateController extends Controller
 
 
 
-    /*----------------------*/
-    /* Recherche de comptes */
-    /*----------------------*/
-    /**
-     * Recupère les comptes correspondant à la recherche
-     */
-    public function searchComptes(Request $request)
-    {
-
-    }
-
-
-
     /*-----------------------------*/
     /* Téléchargements de fichiers */
     /*-----------------------------*/
@@ -400,9 +410,14 @@ class PrivateController extends Controller
         $name = $request->query('name') ?? '';
         $email = $request->query('email') ?? '';
         $pseudo = $request->query('pseudo') ?? '';
+        $sort = $request->query('sort') ?? 'created_at';
+        $order = $request->query('order') ?? 'desc';
+        $search = $request->query('search') ?? '';
+
 
         /* Récupération des comptes */
-        $comptes = PrivateController::getComptes($name, $email, $pseudo);
+        $comptes = PrivateController::getComptes($name, $email, $pseudo, $sort, $order);
+        if ($search != '') { $comptes = PrivateController::getComptesSearch($comptes, $search, $sort, $order); }
 
         /* Création du fichier */
         $content = '| Nom du compte | Identifiant / Email | Mot de passe | Pseudo |' . "\n";
@@ -467,6 +482,34 @@ class PrivateController extends Controller
             $compte->password = openssl_decrypt($compte->password, PrivateController::ciphering, $encryption_key, PrivateController::options, PrivateController::encryption_iv);
         }
 
-        return $order == 'asc' ? $comptes->sortBy($sort) : $comptes->sortByDesc($sort);
+        return strtolower($order) == 'asc' ? $comptes->sortBy(strtolower($sort)) : $comptes->sortByDesc(strtolower($sort));
+    }
+
+    /**
+     * Récupère les comptes qui correspondent à la recherche
+     * @param string $search
+     * @param string $sort
+     * @param string $order
+     */
+    public function getComptesSearch($comptes, string $search, string $sort = 'created_at', $order = 'desc')
+    {
+        $decrypt = $comptes == null || $comptes->isEmpty();
+        $comptes = $comptes ?? Account::all()->where('user_id', auth()->user()->id);
+
+        /* Recherche des comptes qui contiennent le nom */
+        $comptes = $comptes->filter(function ($compte) use ($search) {
+            return str_contains(strtolower($compte->name), $search) || str_contains(strtolower($compte->email), $search) || str_contains(strtolower($compte->pseudo), $search);
+        });
+
+        /* décriptage des mots de passe */
+        if ($decrypt)
+        {
+            $encryption_key = session()->get('key');
+            foreach ($comptes as $compte) {
+                $compte->password = openssl_decrypt($compte->password, PrivateController::ciphering, $encryption_key, PrivateController::options, PrivateController::encryption_iv);
+            }
+        }
+
+        return strtolower($order) == 'asc' ? $comptes->sortBy(strtolower($sort)) : $comptes->sortByDesc(strtolower($sort));
     }
 }

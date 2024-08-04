@@ -69,8 +69,8 @@
 
         <!-- Barre de recherche -->
         <div class="rowStartContainer px-8 space-x-6 mt-4 mb-6">
-            <input class="inputForm" placeholder="Rechercher un compte">
-            <button class="buttonForm">Rechercher</button>
+            <input id="inputSearch" type="text" class="inputForm" placeholder="Rechercher un compte" value="{{ request()->get('search') }}" onkeypress="inputSearch()">
+            <button onclick="search('{{  URL::current() . '?search=' }}')" class="buttonForm">Rechercher</button>
         </div>
 
         <!-- Tableau des comptes -->
@@ -79,11 +79,11 @@
             <thead class="w-full">
                 <tr class="tableRow smallText text-center font-bold">
                     @php request()->get('order') == 'asc' ? $order = 'desc' : $order = 'asc'; @endphp
-                    <th class="tableCell" title="Trier par ordre @if ($order == 'asc') alphabétique @else anti-alphabétique @endif du nom"><a href="{{ URL::current() . '?sort=name&order=' . $order }}">Nom du compte</a></th>
-                    <th class="tableCell" title="Trier par ordre @if ($order == 'asc') alphabétique @else anti-alphabétique @endif de l'email"><a href="{{ URL::current() . '?sort=email&order=' . $order }}">Identifiant / Email</a></th>
+                    <th class="tableCell" title="Trier par ordre @if ($order == 'asc') alphabétique @else anti-alphabétique @endif du nom"><a href="{{ URL::current() . '?sort=name&order=' . $order . '&search=' . request()->get('search') }}">Nom du compte</a></th>
+                    <th class="tableCell" title="Trier par ordre @if ($order == 'asc') alphabétique @else anti-alphabétique @endif de l'email"><a href="{{ URL::current() . '?sort=email&order=' . $order . '&search=' . request()->get('search') }}">Identifiant / Email</a></th>
                     <th class="tableCell">Mot de passe</th>
-                    <th class="tableCell max-md:hidden" title="Trier par ordre @if ($order == 'asc') alphabétique @else anti-alphabétique @endif du pseudo"><a href="{{ URL::current() . '?sort=pseudo&order=' . $order }}">Pseudo</a></th>
-                    <th class="tableCell max-md:hidden" title="Trier par ordre chronologique"><a href="{{ URL::current() . '?sort=created_at&order=' . $order }}">Actions</a></th>
+                    <th class="tableCell max-md:hidden" title="Trier par ordre @if ($order == 'asc') alphabétique @else anti-alphabétique @endif du pseudo"><a href="{{ URL::current() . '?sort=pseudo&order=' . $order . '&search=' . request()->get('search') }}">Pseudo</a></th>
+                    <th class="tableCell max-md:hidden" title="Trier par ordre chronologique"><a href="{{ URL::current() . '?sort=created_at&order=' . $order . '&search=' . request()->get('search') }}">Actions</a></th>
                 </tr>
             </thead>
 
@@ -175,6 +175,12 @@
                             </td>
                         </tr>
                     @endforeach
+
+                    @if ($comptes->count() == 0)
+                        <tr class="tableRow bigText text-center">
+                            <td class="tableCell" colspan="5"><b>Aucun compte</b> ne contient le terme "{{ request()->get('search') }}"</td>
+                        </tr>
+                    @endif
                 @endif
             </tbody>
         </table>
@@ -215,6 +221,11 @@
         @endif
         @if (str_contains(strtolower(URL::current()), 'email' )) @php $param += ['email'  => $comptes->first()->email ]; @endphp @endif
         @if (str_contains(strtolower(URL::current()), 'pseudo')) @php $param += ['pseudo' => $comptes->first()->pseudo]; @endphp @endif
+        @php
+            $param += ['search' => request()->get('search')];
+            $param += ['sort'   => request()->get('sort')];
+            $param += ['order'  => request()->get('order')];
+        @endphp
         
         <a href="{{ route('comptes.download', $param) }}" class="buttonForm">Sauvegarder les comptes dans un fichier texte</a>
         <a href="{{ route('comptes.upload') }}" class="buttonForm mt-8">Charger les comptes depuis un fichier texte</a>
@@ -227,6 +238,16 @@
 <script src="{{ asset('js/passwordGenerator.js') }}"></script>
 <script>
     oldId = 0;
+
+    /**
+     * Permet de scroll jusqu'à la barre de recherche
+     */
+    onload = function() {
+        if ('{{ request()->get('search') }}' != '' || '{{ request()->get('sort') }}' != '') {
+            document.getElementById('inputSearch').scrollIntoView();
+        }
+    }
+
     /**
      * Permet de modifier un compte
      */
@@ -288,9 +309,31 @@
         document.getElementById("myTooltip_" + id).innerHTML = "Mot de passe copié";
     };
 
+    /**
+     * Permet de modifier le message lors de la copie du mot de passe
+     */
     function tooltip(id)
     {
         document.getElementById("myTooltip_" + id).innerHTML = "Copier le mot de passe";
+    }
+
+    /**
+     * Permet de rechercher un compte
+     */
+    function search(url)
+    {
+        inputSearchValue = document.getElementById('inputSearch').value;
+        window.location.href = url + inputSearchValue;
+    }
+
+    /**
+     * Permet de rechercher un compte lors de l'appui sur la touche "Entrée"
+     */
+    function inputSearch()
+    {
+        if (event.key === 'Enter') {
+            search('{{ URL::current() . '?search=' }}');
+        }
     }
 </script>
 @endsection

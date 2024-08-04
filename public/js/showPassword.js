@@ -1,3 +1,8 @@
+/*
+ * Ce fichier fait partie du projet Account Manager
+ * Copyright (C) 2024 Floris Robart <florobart.github@gmail.com>
+ */
+
 /* Affichage du mot de passe */
 function showPassword()
 {

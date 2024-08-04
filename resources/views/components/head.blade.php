@@ -1,6 +1,6 @@
 {{--
- * Ce fichier fait partie du projet Account Manager
- * Copyright (C) 2024 Floris Robart <florobart.github.com>
+ * Ce fichier fait partie du projet Account manager
+ * Copyright (C) 2024 Floris Robart <florobart.github@gmail.com>
 --}}
 
 <!DOCTYPE html>

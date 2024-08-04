@@ -1,16 +1,12 @@
 <?php
 /*
  * Ce fichier fait partie du projet Account Manager
- * Copyright (C) 2024 Floris Robart <florobart.github.com>
+ * Copyright (C) 2024 Floris Robart <florobart.github@gmail.com>
  */
 
- use App\Http\Controllers\PrivateController;
+use App\Http\Controllers\PrivateController;
 use Illuminate\Support\Facades\Route;
 
-/*
- * Ce fichier fait partie du projet Finance Dashboard
- * Copyright (C) 2024 Floris Robart <florobart.github.com>
- */
 
 
 /*-----------------------------*/

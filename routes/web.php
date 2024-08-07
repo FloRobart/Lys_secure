@@ -35,6 +35,13 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/profil', function () { return redirect('<IP Home Server Maison>/profil'); })->name('profil');
 
 
+    /*----------------------------------*/
+    /* Changement de la clé de cryptage */
+    /*----------------------------------*/
+    Route::get('/key/change', [PrivateController::class, 'changeKey'])->name('key.change');
+    Route::post('/key/change', [PrivateController::class, 'changeKeySave'])->name('key.change.save');
+
+
 
     /*=========================*/
     /* Gestionnaire de comptes */

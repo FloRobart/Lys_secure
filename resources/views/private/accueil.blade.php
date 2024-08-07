@@ -36,8 +36,9 @@
                 @csrf
                 <div class="colCenterContainer">
                     <livewire:password-input :confirmation="'false'" :newPassword="'false'" />
+                    <a href="{{ route('key.change') }}" class="smallTextBleuLogo text-end link font-bold">Changer mon mot de passe</a>
                 </div>
-                <div class="rowCenterContainer mt-6">
+                <div class="rowCenterContainer mt-10">
                     <button type="submit" class="buttonForm">Valider</button>
                 </div>
             </form>
@@ -55,6 +56,11 @@
                 <div class="colCenterContainer">
                     <livewire:password-input :confirmation="'false'" :newPassword="'true'" />
                 </div>
+
+                <div class="colCenterContainer">
+                    <livewire:password-input :confirmation="'true'" :newPassword="'true'" />
+                </div>
+
                 <div class="rowCenterContainer">
                     <button type="submit" class="buttonForm">Créer le mot de passe</button>
                 </div>

@@ -49,11 +49,17 @@ class PrivateController extends Controller
         /* Validation des données */
         $request->validate([
             'password' => 'required|string|min:1|max:255',
+            'password_confirmation' => 'required|string|min:1|max:255|same:password',
         ], [
             'password.required' => 'Le mot de passe est obligatoire.',
             'password.string' => 'Le mot de passe doit être une chaîne de caractères.',
             'password.min' => 'Le mot de passe doit contenir au moins 1 caractère.',
             'password.max' => 'Le mot de passe ne doit pas dépasser 255 caractères.',
+            'password_confirmation.required' => 'La confirmation du mot de passe est obligatoire.',
+            'password_confirmation.string' => 'La confirmation du mot de passe doit être une chaîne de caractères.',
+            'password_confirmation.min' => 'La confirmation du mot de passe doit contenir au moins 1 caractère.',
+            'password_confirmation.max' => 'La confirmation du mot de passe ne doit pas dépasser 255 caractères.',
+            'password_confirmation.same' => 'Les mots de passe ne correspondent pas.',
         ]);
 
         /* Sauvegarde de la clé de cryptage */
@@ -67,7 +73,7 @@ class PrivateController extends Controller
         if ($key->save()) {
             return back()->with('success', 'La clé de cryptage a été sauvegardée avec succès 👍.');
         } else {
-            return back()->with('error', 'Une erreur est survenue lors de la sauvegarde de la clé de cryptage ❌.');
+            return back()->with('error', 'Une erreur est survenue lors de la sauvegarde de la clé de cryptage.');
         }
     }
 
@@ -94,6 +100,81 @@ class PrivateController extends Controller
         }
 
         return back()->with('error', 'Le mot de passe est incorect ❌.');
+    }
+
+
+
+    /*----------------------------------*/
+    /* Changement de la clé de cryptage */
+    /*----------------------------------*/
+    /**
+     * Affiche la page de changement de la clé de cryptage
+     */
+    public function changeKey()
+    {
+        return view('private.change_key');
+    }
+
+    /**
+     * Sauvegarde la nouvelle clé de cryptage et encrypte les mots de passe avec la nouvelle clé
+     * @param Request $request
+     */
+    public function changeKeySave(Request $request)
+    {
+        /* Validation des données */
+        $request->validate([
+            'current_password' => 'required|string|min:1|max:255',
+            'password' => 'required|string|min:1|max:255',
+            'password_confirmation' => 'required|string|min:1|max:255|same:password',
+        ], [
+            'current_password.required' => 'L\'ancien mot de passe est obligatoire.',
+            'current_password.string' => 'L\'ancien mot de passe doit être une chaîne de caractères.',
+            'current_password.min' => 'L\'ancien mot de passe doit contenir au moins 1 caractère.',
+            'current_password.max' => 'L\'ancien mot de passe ne doit pas dépasser 255 caractères.',
+            'password.required' => 'Le nouveau mot de passe est obligatoire.',
+            'password.string' => 'Le nouveau mot de passe doit être une chaîne de caractères.',
+            'password.min' => 'Le nouveau mot de passe doit contenir au moins 1 caractère.',
+            'password.max' => 'Le nouveau mot de passe ne doit pas dépasser 255 caractères.',
+            'password_confirmation.required' => 'La confirmation du nouveau mot de passe est obligatoire.',
+            'password_confirmation.string' => 'La confirmation du nouveau mot de passe doit être une chaîne de caractères.',
+            'password_confirmation.min' => 'La confirmation du nouveau mot de passe doit contenir au moins 1 caractère.',
+            'password_confirmation.max' => 'La confirmation du nouveau mot de passe ne doit pas dépasser 255 caractères.',
+            'password_confirmation.same' => 'Les mots de passe ne correspondent pas.',
+        ]);
+
+        /* Mise en place des variables */
+        $old_key = $request->current_password;
+        $new_key = $request->password;
+
+        /* Vérification de l'ancienne clé de cryptage */
+        $key = Key::where('user_id', auth()->user()->id)->first();
+        if (!$key || !Hash::check($old_key, $key->key)) {
+            return back()->with('error', 'Votre mot de passe actuel est incorrect.');
+        }
+
+        /* Sauvegarde de la nouvelle clé de cryptage */
+        $key->key = Hash::make($new_key);
+
+        /* Modification de la clé de cryptage */
+        if ($key->save()) {
+            /* Récupération des comptes */
+            $comptes = PrivateController::getComptes('', '', '');
+
+            /* Chiffrement des mots de passe */
+            foreach ($comptes as $compte) {
+                $compte->password = openssl_encrypt($compte->password, PrivateController::ciphering, $new_key, PrivateController::options, PrivateController::encryption_iv);
+                if (!$compte->save()) {
+                    return back()->with('error', 'Une erreur est survenue lors de la modification de la clé de cryptage.');
+                }
+            }
+
+            /* Enregistrement de la nouvelle clé de cryptage dans la session */
+            session(['key' => $new_key]);
+
+            return redirect()->route('comptes')->with('success', 'La clé de cryptage a été modifiée avec succès 👍.');
+        } else {
+            return back()->with('error', 'Une erreur est survenue lors de la modification de la clé de cryptage.');
+        }
     }
 
 

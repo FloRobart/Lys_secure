@@ -57,6 +57,7 @@
     .normalTextError        { @apply font fontSizeNormal fontColorError   ; }
     .smallText              { @apply font fontSizeSmall  colorFont        ; }
     .smallTextReverse       { @apply font fontSizeSmall  colorFontReverse ; }
+    .smallTextBleuLogo      { @apply font fontSizeSmall  colorFontBleuLogo; }
     .tinyText               { @apply font fontSizeTiny   colorFont        ; }
     .tinyTextReverse        { @apply font fontSizeTiny   colorFontReverse ; }
     .hoverText              { @apply hover:text-[var(--bleuLogo)] hover:underline; }

@@ -227,8 +227,15 @@
             $param += ['order'  => request()->get('order')];
         @endphp
         
+        <!-- sauvegarder les comptes dans un fichier texte (Markdown) -->
         <a href="{{ route('comptes.download', $param) }}" class="buttonForm">Sauvegarder les comptes dans un fichier texte</a>
-        <a href="{{ route('comptes.upload') }}" class="buttonForm mt-8">Charger les comptes depuis un fichier texte</a>
+
+        <!-- Charger les comptes depuis un fichier texte -->
+        <form id="fileForm" action="{{ route('comptes.upload') }}" method="POST" class="colCenterContainer" enctype="multipart/form-data">
+            @csrf
+            <label for="file" class="buttonForm mt-8 cursor-pointer">Charger les comptes depuis un fichier texte</label>
+            <input type="file" id="file" name="file" class="hidden" accept=".txt,.md" onchange="validFileForm()">
+        </form>
     </div>
 </section>
 @endsection
@@ -334,6 +341,15 @@
         if (event.key === 'Enter') {
             search('{{ URL::current() . '?search=' }}');
         }
+    }
+
+    /**
+     * Permet de charger un fichier texte
+     * Redirige vers la route de charger de fichier texte (comptes.upload) avec le fichier texte en paramètre (avec la méthode POST)
+     */
+    function validFileForm()
+    {
+        document.getElementById('fileForm').submit();
     }
 </script>
 @endsection

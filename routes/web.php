@@ -63,7 +63,7 @@ Route::middleware(['auth'])->group(function () {
 
     /* Route liée au téléchargement des comptes */
     Route::get('/comptes/mes_comptes.md', [PrivateController::class, 'downloadComptes'])->name('comptes.download');
-    Route::get('/comptes/upload', [PrivateController::class, 'uploadComptes'])->name('comptes.upload');
+    Route::post('/comptes/upload', [PrivateController::class, 'uploadComptes'])->name('comptes.upload');
 });
 
 /* Route pour la redirection en cas de mauvaise authentification */

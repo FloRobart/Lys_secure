@@ -9,6 +9,7 @@ namespace App\Http\Controllers;
 use App\Models\Account;
 use App\Models\Key;
 use Illuminate\Http\Request;
+use Illuminate\Mail\Mailables\Content;
 use Illuminate\Support\Facades\Hash;
 
 class PrivateController extends Controller
@@ -518,7 +519,51 @@ class PrivateController extends Controller
      */
     public function uploadComptes(Request $request)
     {
-        return back()->with('error', 'Cette fonctionnalité n\'est pas encore disponible.');
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        /* Validation des données */
+        $request->validate([
+            'file' => 'required|file|mimes:md,txt|max:20480',
+        ], [
+            'file.required' => 'Le fichier est obligatoire.',
+            'file.file' => 'Le fichier doit être un fichier.',
+            'file.mimes' => 'Le fichier doit être un fichier de type md ou txt.',
+            'file.max' => 'Le fichier ne doit pas dépasser 20 Mo.',
+        ]);
+
+        /* Récupération du contenu du fichier */
+        $content = file_get_contents($request->file('file')->getRealPath());
+
+        /* Ajout des nouveaux comptes */
+        $encryption_key = session()->get('key'); /* Clé de chiffrement */
+        $txtComptes = explode("\n", $content);
+        $loop = 0;
+        foreach ($txtComptes as $txtCompte) {
+            /* Ignore les 2 premières lignes */
+            if ($loop < 2) {
+                $loop++;
+                continue;
+            }
+
+            $arrayCompte = array_map('trim', explode('|', $txtCompte));
+
+            if (count($arrayCompte) == 6) {
+                $compte = new Account([
+                    'user_id' => auth()->user()->id,
+                    'name' => ucfirst($arrayCompte[1]),
+                    'email' => strtolower($arrayCompte[2]),
+                    'password' => openssl_encrypt($arrayCompte[3], PrivateController::ciphering, $encryption_key, PrivateController::options, PrivateController::encryption_iv),
+                    'pseudo' => $arrayCompte[4],
+                ]);
+
+                if (!$compte->save())
+                {
+                    return back()->with('error', 'Une erreur est survenue lors de l\'ajout des comptes ❌.');
+                }
+            }
+        }
+
+        return back()->with('success', 'Les comptes ont été ajoutés avec succès 👍.');
     }
 
 

@@ -538,6 +538,7 @@ class PrivateController extends Controller
         $encryption_key = session()->get('key'); /* Clé de chiffrement */
         $txtComptes = explode("\n", $content);
         $loop = 0;
+        $count = 1;
         foreach ($txtComptes as $txtCompte) {
             /* Ignore les 2 premières lignes */
             if ($loop < 2) {
@@ -545,16 +546,17 @@ class PrivateController extends Controller
                 continue;
             }
 
-            $arrayCompte = array_map('trim', explode('|', $txtCompte));
+            $arrayCompte = explode(' | ', $txtCompte);
 
-            if (count($arrayCompte) == 6) {
+            if (count($arrayCompte) == 4) {
                 $compte = new Account([
                     'user_id' => auth()->user()->id,
-                    'name' => ucfirst($arrayCompte[1]),
-                    'email' => strtolower($arrayCompte[2]),
-                    'password' => openssl_encrypt($arrayCompte[3], PrivateController::ciphering, $encryption_key, PrivateController::options, PrivateController::encryption_iv),
-                    'pseudo' => $arrayCompte[4],
+                    'name' => ucfirst(str_replace('| ', '', $arrayCompte[0], $count)),
+                    'email' => strtolower($arrayCompte[1]),
+                    'password' => openssl_encrypt($arrayCompte[2], PrivateController::ciphering, $encryption_key, PrivateController::options, PrivateController::encryption_iv),
+                    'pseudo' => str_replace(' |', '', $arrayCompte[3]),
                 ]);
+
 
                 if (!$compte->save())
                 {

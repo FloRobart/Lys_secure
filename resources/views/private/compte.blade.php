@@ -43,7 +43,7 @@
         <div class="rowCenterContainer">
             @php
                 // Supprime les comptes le nom contient un autre nom (ex: "instagram" et "instagram secondaire" compte pour 1, donc seul "instagram" est compté)
-                $nameComptes = $comptes->filter(function($compte) {
+                $nameComptes = $comptes->filter(function($comptes, $compte) {
                     return $comptes->where('name', '!=', $compte->name)->filter(function($compte2) use ($compte) {
                         return str_contains(strtolower($compte2->name), strtolower($compte->name));
                     })->count() == 0;

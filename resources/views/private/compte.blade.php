@@ -62,7 +62,7 @@
 
         <!-- Nombre de pseudo différents -->
         <div class="rowCenterContainer">
-            <span class="normalText">Nombre de pseudo différents : <span class="normalTextBleuLogo font-bold">{{ $comptes->unique('pseudo')->count() }}</span></span>
+            <span class="normalText">Nombre de pseudo différents : <span class="normalTextBleuLogo font-bold">{{ $comptes->unique('pseudo')->count() - 1 }}</span></span>
         </div>
     </div>
 

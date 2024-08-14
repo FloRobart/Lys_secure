@@ -41,7 +41,13 @@
 
         <!-- Nombre de compte différents -->
         <div class="rowCenterContainer">
-            <span class="normalText">Nombre de compte différents : <span class="normalTextBleuLogo font-bold">{{ $comptes->unique('name')->count() }}</span></span>
+            @php
+                // Supprime les comptes le nom contient un autre nom (ex: "instagram", "instagram 1" et "instagram 2" sont considérés comme un seul compte)
+                $nameComptes = $comptes->filter(function($compte) {
+                    return $comptes->where('name', $compte->name)->count() == 1;
+                });
+            @endphp
+            <span class="normalText">Nombre de compte différents : <span class="normalTextBleuLogo font-bold">{{ $nameComptes->count() }}</span></span>
         </div>
 
         <!-- Nombre d'email différents -->

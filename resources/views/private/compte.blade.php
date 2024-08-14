@@ -51,7 +51,13 @@
 
         <!-- Nombre d'email différents -->
         <div class="rowCenterContainer">
-            <span class="normalText">Nombre de compte Gmail différents : <span class="normalTextBleuLogo font-bold">{{ $comptes->where('name', 'Gmail')->unique('email')->count() }}</span></span>
+            @php
+                // Récupération des comptes dont le nom contient "mail" et dont l'email contient "@gmail"
+                $mailComptes = $comptes->filter(function($compte) {
+                    return str_contains(strtolower($compte->name), 'mail') && str_contains(strtolower($compte->email), '@gmail');
+                });
+            @endphp
+            <span class="normalText">Nombre de compte Gmail différents : <span class="normalTextBleuLogo font-bold">{{ $mailComptes->count() }}</span></span>
         </div>
 
         <!-- Nombre de pseudo différents -->
@@ -177,9 +183,15 @@
                     @endforeach
 
                     @if ($comptes->count() == 0)
-                        <tr class="tableRow bigText text-center">
-                            <td class="tableCell" colspan="5"><b>Aucun compte</b> ne contient le terme "{{ request()->get('search') }}"</td>
-                        </tr>
+                        @if (request()->get('search') != '')
+                            <tr class="tableRow bigText text-center">
+                                <td class="tableCell" colspan="5"><b>Aucun compte</b> ne contient le terme "{{ request()->get('search') }}"</td>
+                            </tr>
+                        @else
+                            <tr class="tableRow bigText text-center">
+                                <td class="tableCell" colspan="5"><b>Vous n'avez aucun compte pour le moment</td>
+                            </tr>
+                        @endif
                     @endif
                 @endif
             </tbody>

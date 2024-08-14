@@ -71,7 +71,7 @@
         <!-- Nombre de pseudo différents -->
         <div class="rowCenterContainer">
             @php
-                $pseudoCount = $comptes->unique('pseudo')->count()
+                $pseudoCount = $comptes->unique('pseudo')->count();
                 if ($comptes->where('pseudo', '-')->count() > 0) {
                     $pseudoCount--;
                 }

@@ -626,7 +626,7 @@ class PrivateController extends Controller
 
         /* Recherche des comptes qui contiennent le nom */
         $comptes = $comptes->filter(function ($compte) use ($search) {
-            return str_contains(strtolower($compte->name), $search) || str_contains(strtolower($compte->email), $search) || str_contains(strtolower($compte->pseudo), $search);
+            return str_contains(strtolower($compte->name), strtolower($search)) || str_contains(strtolower($compte->email), strtolower($search)) || str_contains(strtolower($compte->pseudo), strtolower($search));
         });
 
         /* décriptage des mots de passe */

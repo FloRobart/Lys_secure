@@ -42,9 +42,11 @@
         <!-- Nombre de compte différents -->
         <div class="rowCenterContainer">
             @php
-                // Supprime les comptes le nom contient un autre nom (ex: "instagram", "instagram 1" et "instagram 2" sont considérés comme un seul compte)
+                // Supprime les comptes le nom contient un autre nom (ex: "instagram" et "instagram secondaire" compte pour 1, donc seul "instagram" est compté)
                 $nameComptes = $comptes->filter(function($compte) {
-                    return $comptes->where('name', $compte->name)->count() == 1;
+                    return $comptes->where('name', '!=', $compte->name)->filter(function($compte2) use ($compte) {
+                        return str_contains(strtolower($compte2->name), strtolower($compte->name));
+                    })->count() == 0;
                 });
             @endphp
             <span class="normalText">Nombre de compte différents : <span class="normalTextBleuLogo font-bold">{{ $nameComptes->count() }}</span></span>

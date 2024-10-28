@@ -14,12 +14,6 @@ use Illuminate\Support\Facades\Hash;
 
 class PrivateController extends Controller
 {
-    private const ciphering = "AES-128-CTR"; /* Utilisation de l'algorithme de chiffrement AES-128-CTR */
-    private const options = 0; /* Utilisation de l'option 0 */
-    private const encryption_iv = '1234567891011121'; /* Vecteur d'initialisation */
-
-
-
     /*=========*/
     /* Accueil */
     /*=========*/
@@ -48,17 +42,17 @@ class PrivateController extends Controller
     {
         /* Validation des données */
         $request->validate([
-            'password' => 'required|string|min:' . env('MIN_KEY_LENGTH', 12) . '|max:255|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).*$/',
-            'password_confirmation' => 'required|string|min:' . env('MIN_KEY_LENGTH', 12) . '|same:password',
+            'password' => 'required|string|min:' . env('KEY_MIN_LENGTH', 12) . '|max:255|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).*$/',
+            'password_confirmation' => 'required|string|min:' . env('KEY_MIN_LENGTH', 12) . '|same:password',
         ], [
             'password.required' => 'Le mot de passe est obligatoire.',
             'password.string' => 'Le mot de passe doit être une chaîne de caractères.',
-            'password.min' => 'Le mot de passe doit contenir au moins ' . env('MIN_KEY_LENGTH', 12) . ' caractère.',
+            'password.min' => 'Le mot de passe doit contenir au moins ' . env('KEY_MIN_LENGTH', 12) . ' caractère.',
             'password.max' => 'Le mot de passe ne doit pas dépasser 255 caractères.',
             'password.regex' => 'Le mot de passe doit contenir au moins une lettre minuscule, une lettre majuscule et un chiffre.',
             'password_confirmation.required' => 'La confirmation du mot de passe est obligatoire.',
             'password_confirmation.string' => 'La confirmation du mot de passe doit être une chaîne de caractères.',
-            'password_confirmation.min' => 'La confirmation du mot de passe doit contenir au moins ' . env('MIN_KEY_LENGTH', 12) . ' caractère.',
+            'password_confirmation.min' => 'La confirmation du mot de passe doit contenir au moins ' . env('KEY_MIN_LENGTH', 12) . ' caractère.',
             'password_confirmation.same' => 'Les mots de passe ne correspondent pas.',
         ]);
 
@@ -122,14 +116,14 @@ class PrivateController extends Controller
         /* Validation des données */
         $request->validate([
             'current_password' => 'required|string',
-            'password' => 'required|string|min:' . env('MIN_KEY_LENGTH', 12) . '|max:255|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).*$/',
+            'password' => 'required|string|min:' . env('KEY_MIN_LENGTH', 12) . '|max:255|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).*$/',
             'password_confirmation' => 'required|string|same:password',
         ], [
             'current_password.required' => 'L\'ancien mot de passe est obligatoire.',
             'current_password.string' => 'L\'ancien mot de passe doit être une chaîne de caractères.',
             'password.required' => 'Le nouveau mot de passe est obligatoire.',
             'password.string' => 'Le nouveau mot de passe doit être une chaîne de caractères.',
-            'password.min' => 'Le nouveau mot de passe doit contenir au moins ' . env('MIN_KEY_LENGTH', 12) . ' caractère.',
+            'password.min' => 'Le nouveau mot de passe doit contenir au moins ' . env('KEY_MIN_LENGTH', 12) . ' caractère.',
             'password.max' => 'Le nouveau mot de passe ne doit pas dépasser 255 caractères.',
             'password.regex' => 'Le nouveau mot de passe doit contenir au moins une lettre minuscule, une lettre majuscule et un chiffre.',
             'password_confirmation.required' => 'La confirmation du nouveau mot de passe est obligatoire.',
@@ -157,7 +151,7 @@ class PrivateController extends Controller
 
             /* Chiffrement des mots de passe */
             foreach ($comptes as $compte) {
-                $compte->password = openssl_encrypt($compte->password, PrivateController::ciphering, $new_key, PrivateController::options, PrivateController::encryption_iv);
+                $compte->password = openssl_encrypt($compte->password, env('KEY_CIPHERING'), $new_key, env('KEY_OPTIONS'), env('KEY_ENCRYPTION_IV'));
                 if (!$compte->save()) {
                     return back()->with('error', 'Une erreur est survenue lors de la modification de la clé de cryptage.');
                 }
@@ -381,7 +375,7 @@ class PrivateController extends Controller
         
         /* Chiffrement du mot de passe */
         $encryption_key = session()->get('key'); /* Clé de chiffrement */
-        $compte->password = openssl_encrypt($request->password, PrivateController::ciphering, $encryption_key, PrivateController::options, PrivateController::encryption_iv);
+        $compte->password = openssl_encrypt($request->password, env('KEY_CIPHERING'), $encryption_key, env('KEY_OPTIONS'), env('KEY_ENCRYPTION_IV'));
         
         
         /* Sauvegarde du compte */
@@ -436,7 +430,7 @@ class PrivateController extends Controller
 
         /* Chiffrement du mot de passe */
         $encryption_key = session()->get('key'); /* Clé de chiffrement */
-        $compte->password = openssl_encrypt($request->password, PrivateController::ciphering, $encryption_key, PrivateController::options, PrivateController::encryption_iv);
+        $compte->password = openssl_encrypt($request->password, env('KEY_CIPHERING'), $encryption_key, env('KEY_OPTIONS'), env('KEY_ENCRYPTION_IV'));
 
         /* Sauvegarde du compte */
         if ($compte->save()) {
@@ -547,7 +541,7 @@ class PrivateController extends Controller
                     'user_id' => auth()->user()->id,
                     'name' => ucfirst(str_replace('| ', '', $arrayCompte[0], $count)),
                     'email' => strtolower($arrayCompte[1]),
-                    'password' => openssl_encrypt($arrayCompte[2], PrivateController::ciphering, $encryption_key, PrivateController::options, PrivateController::encryption_iv),
+                    'password' => openssl_encrypt($arrayCompte[2], env('KEY_CIPHERING'), $encryption_key, env('KEY_OPTIONS'), env('KEY_ENCRYPTION_IV')),
                     'pseudo' => str_replace(' |', '', $arrayCompte[3]),
                 ]);
 
@@ -601,7 +595,7 @@ class PrivateController extends Controller
         /* décriptage des mots de passe */
         $encryption_key = session()->get('key');
         foreach ($comptes as $compte) {
-            $compte->password = openssl_decrypt($compte->password, PrivateController::ciphering, $encryption_key, PrivateController::options, PrivateController::encryption_iv);
+            $compte->password = openssl_decrypt($compte->password, env('KEY_CIPHERING'), $encryption_key, env('KEY_OPTIONS'), env('KEY_ENCRYPTION_IV'));
         }
 
         return $comptes;
@@ -628,10 +622,27 @@ class PrivateController extends Controller
         {
             $encryption_key = session()->get('key');
             foreach ($comptes as $compte) {
-                $compte->password = openssl_decrypt($compte->password, PrivateController::ciphering, $encryption_key, PrivateController::options, PrivateController::encryption_iv);
+                $compte->password = openssl_decrypt($compte->password, env('KEY_CIPHERING'), $encryption_key, env('KEY_OPTIONS'), env('KEY_ENCRYPTION_IV'));
             }
         }
 
         return $comptes;
+    }
+
+    /**
+     * Décrypte le mot de passe correspondant au compte
+     * @param int $id Id du compte
+     * @return string Mot de passe déchiffré
+     * @return null Si le compte n'existe pas
+     */
+    public function decryptPassword(int $id)
+    {
+        $compte = Account::find($id);
+        if ($compte) {
+            $encryption_key = session()->get('key');
+            return openssl_decrypt($compte->password, env('KEY_CIPHERING'), $encryption_key, env('KEY_OPTIONS'), env('KEY_ENCRYPTION_IV'));
+        }
+
+        return null;
     }
 }

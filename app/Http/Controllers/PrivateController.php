@@ -20,7 +20,6 @@ class PrivateController extends Controller
 
 
 
-
     /*=========*/
     /* Accueil */
     /*=========*/
@@ -30,7 +29,7 @@ class PrivateController extends Controller
     public function accueil()
     {
         $key = Key::where('user_id', auth()->user()->id)->first();
-        if ($key) {
+        if ($key != null) {
             session(['key_exist' => filter_var(true, FILTER_VALIDATE_BOOLEAN)]);
         }
 
@@ -49,17 +48,17 @@ class PrivateController extends Controller
     {
         /* Validation des données */
         $request->validate([
-            'password' => 'required|string|min:1|max:255',
-            'password_confirmation' => 'required|string|min:1|max:255|same:password',
+            'password' => 'required|string|min:' . env('MIN_KEY_LENGTH', 12) . '|max:255|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).*$/',
+            'password_confirmation' => 'required|string|min:' . env('MIN_KEY_LENGTH', 12) . '|same:password',
         ], [
             'password.required' => 'Le mot de passe est obligatoire.',
             'password.string' => 'Le mot de passe doit être une chaîne de caractères.',
-            'password.min' => 'Le mot de passe doit contenir au moins 1 caractère.',
+            'password.min' => 'Le mot de passe doit contenir au moins ' . env('MIN_KEY_LENGTH', 12) . ' caractère.',
             'password.max' => 'Le mot de passe ne doit pas dépasser 255 caractères.',
+            'password.regex' => 'Le mot de passe doit contenir au moins une lettre minuscule, une lettre majuscule et un chiffre.',
             'password_confirmation.required' => 'La confirmation du mot de passe est obligatoire.',
             'password_confirmation.string' => 'La confirmation du mot de passe doit être une chaîne de caractères.',
-            'password_confirmation.min' => 'La confirmation du mot de passe doit contenir au moins 1 caractère.',
-            'password_confirmation.max' => 'La confirmation du mot de passe ne doit pas dépasser 255 caractères.',
+            'password_confirmation.min' => 'La confirmation du mot de passe doit contenir au moins ' . env('MIN_KEY_LENGTH', 12) . ' caractère.',
             'password_confirmation.same' => 'Les mots de passe ne correspondent pas.',
         ]);
 
@@ -85,12 +84,10 @@ class PrivateController extends Controller
     {
         /* Validation des données */
         $request->validate([
-            'password' => 'required|string|min:1|max:255',
+            'password' => 'required|string',
         ], [
             'password.required' => 'Le mot de passe est obligatoire.',
             'password.string' => 'Le mot de passe doit être une chaîne de caractères.',
-            'password.min' => 'Le mot de passe doit contenir au moins 1 caractère.',
-            'password.max' => 'Le mot de passe ne doit pas dépasser 255 caractères.',
         ]);
 
         /* Vérification de la clé de cryptage */
@@ -124,22 +121,19 @@ class PrivateController extends Controller
     {
         /* Validation des données */
         $request->validate([
-            'current_password' => 'required|string|min:1|max:255',
-            'password' => 'required|string|min:1|max:255',
-            'password_confirmation' => 'required|string|min:1|max:255|same:password',
+            'current_password' => 'required|string',
+            'password' => 'required|string|min:' . env('MIN_KEY_LENGTH', 12) . '|max:255|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).*$/',
+            'password_confirmation' => 'required|string|same:password',
         ], [
             'current_password.required' => 'L\'ancien mot de passe est obligatoire.',
             'current_password.string' => 'L\'ancien mot de passe doit être une chaîne de caractères.',
-            'current_password.min' => 'L\'ancien mot de passe doit contenir au moins 1 caractère.',
-            'current_password.max' => 'L\'ancien mot de passe ne doit pas dépasser 255 caractères.',
             'password.required' => 'Le nouveau mot de passe est obligatoire.',
             'password.string' => 'Le nouveau mot de passe doit être une chaîne de caractères.',
-            'password.min' => 'Le nouveau mot de passe doit contenir au moins 1 caractère.',
+            'password.min' => 'Le nouveau mot de passe doit contenir au moins ' . env('MIN_KEY_LENGTH', 12) . ' caractère.',
             'password.max' => 'Le nouveau mot de passe ne doit pas dépasser 255 caractères.',
+            'password.regex' => 'Le nouveau mot de passe doit contenir au moins une lettre minuscule, une lettre majuscule et un chiffre.',
             'password_confirmation.required' => 'La confirmation du nouveau mot de passe est obligatoire.',
             'password_confirmation.string' => 'La confirmation du nouveau mot de passe doit être une chaîne de caractères.',
-            'password_confirmation.min' => 'La confirmation du nouveau mot de passe doit contenir au moins 1 caractère.',
-            'password_confirmation.max' => 'La confirmation du nouveau mot de passe ne doit pas dépasser 255 caractères.',
             'password_confirmation.same' => 'Les mots de passe ne correspondent pas.',
         ]);
 

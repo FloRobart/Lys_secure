@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Hash;
 
 class PrivateController extends Controller
 {
+    // test
     /*=========*/
     /* Accueil */
     /*=========*/

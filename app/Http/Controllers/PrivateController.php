@@ -9,8 +9,8 @@ namespace App\Http\Controllers;
 use App\Models\Account;
 use App\Models\Key;
 use Illuminate\Http\Request;
-use Illuminate\Mail\Mailables\Content;
 use Illuminate\Support\Facades\Hash;
+
 
 class PrivateController extends Controller
 {

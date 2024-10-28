@@ -217,7 +217,7 @@
             <div class="colCenterContainer">
                 <div class="colStartContainer lg:rowStartContainer">
                     <input id="name"     name="name"     required type="text" placeholder="Nom du compte" class="w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
-                    <input id="email"    name="email"    required type="text" placeholder="Email"         class="w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
+                    <input id="email"    name="email"    required type="text" placeholder="Identifiant"   class="w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
                     <input id="password" name="password" required type="text" placeholder="Mot de passe"  class="w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
                     <input id="pseudo"   name="pseudo"            type="text" placeholder="Pseudo"        class="w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
                 </div>

@@ -376,7 +376,7 @@ class PrivateController extends Controller
         $compte = new Account();
         $compte->user_id = auth()->user()->id;
         $compte->name = ucfirst($request->name);
-        $compte->email = strtolower($request->email);
+        $compte->email = $request->email;
         $compte->pseudo = $request->pseudo ?? '-';
         
         /* Chiffrement du mot de passe */
@@ -431,7 +431,7 @@ class PrivateController extends Controller
         /* Modification de l'compte */
         $compte = Account::find($request->id);
         $compte->name = ucfirst($request->name);
-        $compte->email = strtolower($request->email);
+        $compte->email = $request->email;
         $compte->pseudo = $request->pseudo ?? '-';
 
         /* Chiffrement du mot de passe */
@@ -581,7 +581,7 @@ class PrivateController extends Controller
      */
     public function getComptes(string $name, string $email, string $pseudo, string $sort = 'created_at', $order = 'desc')
     {
-        $comptes = Account::all()->where('user_id', auth()->user()->id);
+        $comptes = Account::where('user_id', auth()->user()->id)->get();
 
         if ($name != '') {
             /* Recherche des comptes qui contiennent le nom */
@@ -616,7 +616,7 @@ class PrivateController extends Controller
     public function getComptesSearch($comptes, string $search, string $sort = 'created_at', $order = 'desc')
     {
         $decrypt = $comptes == null || $comptes->isEmpty();
-        $comptes = $comptes ?? Account::all()->where('user_id', auth()->user()->id);
+        $comptes = $comptes ?? Account::where('user_id', auth()->user()->id)->get();
 
         /* Recherche des comptes qui contiennent le nom */
         $comptes = $comptes->filter(function ($compte) use ($search) {

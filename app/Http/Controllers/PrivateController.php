@@ -579,9 +579,9 @@ class PrivateController extends Controller
      * @param string $sort
      * @param string $order
      */
-    public function getComptes(string $name, string $email, string $pseudo, string $sort = 'created_at', $order = 'desc')
+    public function getComptes(string $name, string $email, string $pseudo, ?string $sort = 'created_at', ?string $order = 'desc')
     {
-        $comptes = Account::where('user_id', auth()->user()->id)->get();
+        $comptes = Account::where('user_id', auth()->user()->id)->orderBy($sort, $order)->get();
 
         if ($name != '') {
             /* Recherche des comptes qui contiennent le nom */
@@ -604,7 +604,7 @@ class PrivateController extends Controller
             $compte->password = openssl_decrypt($compte->password, PrivateController::ciphering, $encryption_key, PrivateController::options, PrivateController::encryption_iv);
         }
 
-        return strtolower($order) == 'asc' ? $comptes->sortBy(strtolower($sort)) : $comptes->sortByDesc(strtolower($sort));
+        return $comptes;
     }
 
     /**
@@ -616,7 +616,7 @@ class PrivateController extends Controller
     public function getComptesSearch($comptes, string $search, string $sort = 'created_at', $order = 'desc')
     {
         $decrypt = $comptes == null || $comptes->isEmpty();
-        $comptes = $comptes ?? Account::where('user_id', auth()->user()->id)->get();
+        $comptes = $comptes ?? Account::where('user_id', auth()->user()->id)->orderBy($sort, $order)->get();
 
         /* Recherche des comptes qui contiennent le nom */
         $comptes = $comptes->filter(function ($compte) use ($search) {
@@ -632,6 +632,6 @@ class PrivateController extends Controller
             }
         }
 
-        return strtolower($order) == 'asc' ? $comptes->sortBy(strtolower($sort)) : $comptes->sortByDesc(strtolower($sort));
+        return $comptes;
     }
 }

@@ -19,6 +19,7 @@ class PrivateController extends Controller
     /*=========*/
     /**
      * Affiche l'accueil
+     * @return \Illuminate\View\View private.accueil
      */
     public function accueil()
     {
@@ -37,6 +38,8 @@ class PrivateController extends Controller
     /*------------------*/
     /**
      * Sauvegarde la clé de cryptage
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse Retourne la page précédente
      */
     public function saveKey(Request $request)
     {
@@ -73,6 +76,8 @@ class PrivateController extends Controller
 
     /**
      * Vérifie la clé de cryptage
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse comptes
      */
     public function checkKey(Request $request)
     {
@@ -101,6 +106,7 @@ class PrivateController extends Controller
     /*----------------------------------*/
     /**
      * Affiche la page de changement de la clé de cryptage
+     * @return \Illuminate\View\View private.change_key
      */
     public function changeKey()
     {
@@ -110,6 +116,7 @@ class PrivateController extends Controller
     /**
      * Sauvegarde la nouvelle clé de cryptage et encrypte les mots de passe avec la nouvelle clé
      * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse comptes
      */
     public function changeKeySave(Request $request)
     {
@@ -177,6 +184,8 @@ class PrivateController extends Controller
     /*-----------------------*/
     /**
      * Affiche tous les comptes
+     * @param Request $request
+     * @return \Illuminate\View\View private.compte
      */
     public function comptes(Request $request)
     {
@@ -195,6 +204,9 @@ class PrivateController extends Controller
 
     /**
      * Affiche tous les comptes d'un même nom
+     * @param Request $request
+     * @param string $name Nom du compte
+     * @return \Illuminate\View\View private.compte
      */
     public function comptesName(Request $request, string $name)
     {
@@ -213,6 +225,9 @@ class PrivateController extends Controller
 
     /**
      * Affiche tous les comptes d'un même email
+     * @param Request $request
+     * @param string $email Identifiant du compte
+     * @return \Illuminate\View\View private.compte
      */
     public function comptesEmail(Request $request, string $email)
     {
@@ -231,6 +246,9 @@ class PrivateController extends Controller
 
     /**
      * Affiche tous les comptes d'un même pseudo
+     * @param Request $request
+     * @param string $pseudo Pseudo du compte
+     * @return \Illuminate\View\View private.compte
      */
     public function comptesPseudo(Request $request, string $pseudo)
     {
@@ -249,6 +267,10 @@ class PrivateController extends Controller
 
     /**
      * Affiche les comptes d'un même nom et d'un même email
+     * @param Request $request
+     * @param string $name Nom du compte
+     * @param string $email Identifiant du compte
+     * @return \Illuminate\View\View private.compte
      */
     public function comptesNameEmail(Request $request, string $name, string $email)
     {
@@ -267,6 +289,10 @@ class PrivateController extends Controller
 
     /**
      * Affiche les comptes d'un même name et d'un même pseudo
+     * @param Request $request
+     * @param string $name Nom du compte
+     * @param string $pseudo Pseudo du compte
+     * @return \Illuminate\View\View private.compte
      */
     public function comptesNamePseudo(Request $request, string $name, string $pseudo)
     {
@@ -285,6 +311,10 @@ class PrivateController extends Controller
 
     /**
      * Affiche les comptes d'un même email et d'un même pseudo
+     * @param Request $request
+     * @param string $email Identifiant du compte
+     * @param string $pseudo Pseudo du compte
+     * @return \Illuminate\View\View private.compte
      */
     public function comptesEmailPseudo(Request $request, string $email, string $pseudo)
     {
@@ -303,6 +333,11 @@ class PrivateController extends Controller
 
     /**
      * Affiche les détails d'un compte d'un même nom, d'un même email et d'un même pseudo
+     * @param Request $request
+     * @param string $name Nom du compte
+     * @param string $email Identifiant du compte
+     * @param string $pseudo Pseudo du compte
+     * @return \Illuminate\View\View private.compte
      */
     public function comptesNameEmailPseudo(Request $request, string $name, string $email, string $pseudo)
     {
@@ -326,6 +361,8 @@ class PrivateController extends Controller
     /*---------------------*/
     /**
      * Ajoute un compte
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse Retourne la page précédente
      */
     public function addCompte(Request $request)
     {
@@ -388,6 +425,8 @@ class PrivateController extends Controller
 
     /**
      * Modifie un compte
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse Retourne la page précédente
      */
     public function editCompte(Request $request)
     {
@@ -442,6 +481,8 @@ class PrivateController extends Controller
 
     /**
      * Supprime un compte
+     * @param string $id Id du compte
+     * @return \Illuminate\Http\RedirectResponse Retourne la page précédente
      */
     public function removeCompte(string $id)
     {
@@ -464,6 +505,19 @@ class PrivateController extends Controller
         }
     }
 
+    /**
+     * Permet d'afficher le mot de passe d'un compte
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse Retourne le mot de passe
+     */
+    public function getPassword(Request $request)
+    {
+        $id = $request->id;
+        $password = $this->decryptPassword($id);
+
+        return response($password, 200)->header('Content-Type', 'text/plain');
+    }
+
 
 
     /*-----------------------------*/
@@ -471,6 +525,8 @@ class PrivateController extends Controller
     /*-----------------------------*/
     /**
      * Télécharge le fichier des comptes
+     * @param Request $request
+     * @return \Illuminate\Http\Response Retourne le fichier
      */
     public function downloadComptes(Request $request)
     {
@@ -504,6 +560,8 @@ class PrivateController extends Controller
 
     /**
      * Charger le fichier des comptes
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse Retourne la page précédente
      */
     public function uploadComptes(Request $request)
     {
@@ -572,6 +630,7 @@ class PrivateController extends Controller
      * @param string $pseudo
      * @param string $sort
      * @param string $order
+     * @return \Illuminate\Database\Eloquent\Collection $comptes
      */
     public function getComptes(string $name, string $email, string $pseudo, ?string $sort = 'created_at', ?string $order = 'desc')
     {
@@ -593,9 +652,8 @@ class PrivateController extends Controller
         }
 
         /* décriptage des mots de passe */
-        $encryption_key = session()->get('key');
         foreach ($comptes as $compte) {
-            $compte->password = openssl_decrypt($compte->password, env('KEY_CIPHERING'), $encryption_key, env('KEY_OPTIONS'), env('KEY_ENCRYPTION_IV'));
+            $compte->password = null;
         }
 
         return $comptes;
@@ -606,6 +664,7 @@ class PrivateController extends Controller
      * @param string $search
      * @param string $sort
      * @param string $order
+     * @param \Illuminate\Database\Eloquent\Collection $comptes
      */
     public function getComptesSearch($comptes, string $search, string $sort = 'created_at', $order = 'desc')
     {
@@ -620,9 +679,8 @@ class PrivateController extends Controller
         /* décriptage des mots de passe */
         if ($decrypt)
         {
-            $encryption_key = session()->get('key');
             foreach ($comptes as $compte) {
-                $compte->password = openssl_decrypt($compte->password, env('KEY_CIPHERING'), $encryption_key, env('KEY_OPTIONS'), env('KEY_ENCRYPTION_IV'));
+                $compte->password = null;
             }
         }
 
@@ -632,8 +690,7 @@ class PrivateController extends Controller
     /**
      * Décrypte le mot de passe correspondant au compte
      * @param int $id Id du compte
-     * @return string Mot de passe déchiffré
-     * @return null Si le compte n'existe pas
+     * @return string|null Mot de passe déchiffré ou null si le compte n'existe pas
      */
     public function decryptPassword(int $id)
     {

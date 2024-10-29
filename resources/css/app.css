@@ -66,7 +66,7 @@
     .PlaceholderText        { @apply placeholder-[var(--placeholderColor)] placeholder:font-light; }
 
     /* Lien */
-    .link                   { @apply hover:underline; }
+    .link                   { @apply hover:underline cursor-pointer; }
 
     /* Icônes */
     .bigIcons               { @apply w-36 h-36 lg:w-48 lg:h-48 xl:w-60 xl:h-60; }

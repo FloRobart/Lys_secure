@@ -102,7 +102,7 @@
                     <th class="tableCell" title="Trier par ordre @if ($order == 'asc') alphabétique @else anti-alphabétique @endif du nom"><a href="{{ URL::current() . '?sort=name&order=' . $order . '&search=' . request()->get('search') }}">Nom du compte</a></th>
                     <th class="tableCell" title="Trier par ordre @if ($order == 'asc') alphabétique @else anti-alphabétique @endif de l'email"><a href="{{ URL::current() . '?sort=email&order=' . $order . '&search=' . request()->get('search') }}">Identifiant / Email</a></th>
                     <th class="tableCell">Mot de passe</th>
-                    <th class="tableCell max-md:hidden" title="Trier par ordre @if ($order == 'asc') alphabétique @else anti-alphabétique @endif du pseudo"><a href="{{ URL::current() . '?sort=pseudo&order=' . $order . '&search=' . request()->get('search') }}">Pseudo</a></th>
+                    <th class="tableCell" title="Trier par ordre @if ($order == 'asc') alphabétique @else anti-alphabétique @endif du pseudo"><a href="{{ URL::current() . '?sort=pseudo&order=' . $order . '&search=' . request()->get('search') }}">Pseudo</a></th>
                     <th class="tableCell max-md:hidden" title="Trier par ordre chronologique"><a href="{{ URL::current() . '?sort=created_at&order=' . $order . '&search=' . request()->get('search') }}">Actions</a></th>
                 </tr>
             </thead>
@@ -151,28 +151,55 @@
                             @endif
                             
                             <!-- Mot de passe -->
-                            <td class="tableCell tooltip md:mt-[-18px] lg:mt-[-25px] xl:mt-[-30px]">
-                                <button title="copier le mot de passe" class="link" onclick="copyToClipboard('{{ str_replace('\'', '\\\'', $compte->password) }}', '{{ $compte->id }}')" onmouseout="tooltip({{ $compte->id }})">
-                                    <span class="tooltiptext" id="myTooltip_{{ $compte->id }}">Copier le mot de passe</span>
-                                    {{ $compte->password }}
-                                </button>
+                            <td>
+                                <!-- Composant AlpineJS pour afficher le mot de passe -->
+                                <div class="tableCell rowCenterContainer" x-data="{ password: '' }">
+                                    <!-- SVG à cliquer pour afficher le mot de passe -->
+                                    <div class="w-fit link" title="Afficher le mot de passe"
+                                        onclick="this.getElementsByTagName('div')[0].classList.toggle('hidden')"
+                                        @click="fetch('/get/password/{{ $compte->id }}')
+                                            .then(response => response.text())
+                                            .then(data => password = data)">
+
+                                        <div class="smallRowCenterContainer">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="tinySizeIcons">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88" />
+                                            </svg>
+                                        </div>
+                                    </div>
+
+                                    <!-- Affichage du mot de passe -->
+                                    <span>
+                                        <button x-text="password" id="myTooltip_{{ $compte->id }}" title="copier le mot de passe" class="link" 
+                                                onclick="
+                                                    fetch('/get/password/{{ $compte->id }}')
+                                                        .then(response => response.text())
+                                                        .then(data => {
+                                                            password = data;
+                                                            copyToClipboard(password, '{{ $compte->id }}');
+                                                        });
+                                                "
+                                                onmouseout="tooltip({{ $compte->id }})">
+                                        </button>
+                                    </span>
+                                </div>
                             </td>
                             
                             <!-- Pseudo -->
                             @if (str_contains(strtolower(URL::current()), 'pseudo'))
-                                <td class="tableCell max-md:hidden"><a title="Afficher les comptes avec le pseudo {{ $compte->pseudo }}" href="{{ route('comptes.pseudo', ['pseudo' => $compte->pseudo]) }}" class="link">{{ $compte->pseudo }}</a></td>
+                                <td class="tableCell"><a title="Afficher les comptes avec le pseudo {{ $compte->pseudo }}" href="{{ route('comptes.pseudo', ['pseudo' => $compte->pseudo]) }}" class="link">{{ $compte->pseudo }}</a></td>
                             @else
                                 @if (str_contains(strtolower(URL::current()), 'email'))
                                     @if (str_contains(strtolower(URL::current()), 'name'))
-                                        <td class="tableCell max-md:hidden" title="Afficher les comptes {{ $compte->name }} lié au mail {{ $compte->email }} avec le pseudo {{ $compte->pseudo }}"><a href="{{ route('comptes.name.email.pseudo', ['name' => $compte->name, 'email' => $compte->email, 'pseudo' => $compte->pseudo]) }}" class="link">{{ $compte->pseudo }}</a></td>
+                                        <td class="tableCell" title="Afficher les comptes {{ $compte->name }} lié au mail {{ $compte->email }} avec le pseudo {{ $compte->pseudo }}"><a href="{{ route('comptes.name.email.pseudo', ['name' => $compte->name, 'email' => $compte->email, 'pseudo' => $compte->pseudo]) }}" class="link">{{ $compte->pseudo }}</a></td>
                                     @else
-                                        <td class="tableCell max-md:hidden" title="Afficher les comptes lié au mail {{ $compte->email }} et avec le pseudo {{ $compte->pseudo }}"><a href="{{ route('comptes.email.pseudo', ['email' => $compte->email, 'pseudo' => $compte->pseudo]) }}" class="link">{{ $compte->pseudo }}</a></td>
+                                        <td class="tableCell" title="Afficher les comptes lié au mail {{ $compte->email }} et avec le pseudo {{ $compte->pseudo }}"><a href="{{ route('comptes.email.pseudo', ['email' => $compte->email, 'pseudo' => $compte->pseudo]) }}" class="link">{{ $compte->pseudo }}</a></td>
                                     @endif
                                 @else
                                     @if (str_contains(strtolower(URL::current()), 'name'))
-                                        <td class="tableCell max-md:hidden" title="Afficher les comptes {{ $compte->name }} avec le pseudo {{ $compte->pseudo }}"><a href="{{ route('comptes.name.pseudo', ['name' => $compte->name, 'pseudo' => $compte->pseudo]) }}" class="link">{{  $compte->pseudo}}</a></td>
+                                        <td class="tableCell" title="Afficher les comptes {{ $compte->name }} avec le pseudo {{ $compte->pseudo }}"><a href="{{ route('comptes.name.pseudo', ['name' => $compte->name, 'pseudo' => $compte->pseudo]) }}" class="link">{{  $compte->pseudo}}</a></td>
                                     @else
-                                        <td class="tableCell max-md:hidden" title="Afficher les comptes avec le pseudo {{ $compte->pseudo }}"><a href="{{ route('comptes.pseudo', ['pseudo' => $compte->pseudo]) }}" class="link">{{ $compte->pseudo }}</a></td>
+                                        <td class="tableCell" title="Afficher les comptes avec le pseudo {{ $compte->pseudo }}"><a href="{{ route('comptes.pseudo', ['pseudo' => $compte->pseudo]) }}" class="link">{{ $compte->pseudo }}</a></td>
                                     @endif
                                 @endif
                             @endif
@@ -321,10 +348,12 @@
         try {
             document.execCommand('copy')
         } catch(err) {
-            console.error('Unable to copy to clipboard',err)
+            console.error('Une erreur est survenu lors de la copie du mot de passe', err)
         }
+
         document.getElementById("row_" + id).removeChild(textArea);
-        document.getElementById("myTooltip_" + id).innerHTML = "Mot de passe copié";
+        document.getElementById("myTooltip_" + id).classList.remove('text-black');
+        document.getElementById("myTooltip_" + id).classList.add('fontColorValid');
     };
 
     /**
@@ -339,7 +368,8 @@
             unsecuredCopyToClipboard(content, id);
         }
 
-        document.getElementById("myTooltip_" + id).innerHTML = "Mot de passe copié";
+        document.getElementById("myTooltip_" + id).classList.remove('text-black');
+        document.getElementById("myTooltip_" + id).classList.add('fontColorValid');
     };
 
     /**
@@ -347,7 +377,8 @@
      */
     function tooltip(id)
     {
-        document.getElementById("myTooltip_" + id).innerHTML = "Copier le mot de passe";
+        document.getElementById("myTooltip_" + id).classList.remove('fontColorValid');
+        document.getElementById("myTooltip_" + id).classList.add('text-black');
     }
 
     /**
@@ -378,48 +409,4 @@
         document.getElementById('fileForm').submit();
     }
 </script>
-@endsection
-
-@section('styles')
-<style>
-    /* Style pour le message lors de la copie du mot de passe */
-    .tooltip {
-        position: relative;
-        display: inline-block;
-    }
-
-    .tooltip .tooltiptext {
-        visibility: hidden;
-        width: 100px;
-        margin-left: -50px;
-        @media (min-width: 768px) { width: 300px; margin-left: -150px; }
-        background-color: #555;
-        color: #fff;
-        text-align: center;
-        border-radius: 6px;
-        padding: 5px;
-        position: absolute;
-        z-index: 1;
-        bottom: 150%;
-        left: 50%;
-        opacity: 0;
-        transition: opacity 0.3s;
-    }
-
-    .tooltip .tooltiptext::after {
-        content: "";
-        position: absolute;
-        top: 100%;
-        left: 50%;
-        margin-left: -5px;
-        border-width: 5px;
-        border-style: solid;
-        border-color: #555 transparent transparent transparent;
-    }
-
-    .tooltip:hover .tooltiptext {
-        visibility: visible;
-        opacity: 1;
-    }
-</style>
 @endsection

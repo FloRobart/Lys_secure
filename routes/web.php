@@ -6,6 +6,7 @@
 
 use App\Http\Controllers\PrivateController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Middleware\VerifIP;
 
 
 
@@ -13,7 +14,7 @@ use Illuminate\Support\Facades\Route;
 /* Route pour les utilisateurs */
 /*      PrivateController      */
 /*-----------------------------*/
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', VerifIP::class])->group(function () {
     /*=========*/
     /* Accueil */
     /*=========*/

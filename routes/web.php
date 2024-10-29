@@ -56,6 +56,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/comptes/email/{email}/pseudo/{pseudo}', [PrivateController::class, 'comptesEmailPseudo'])->name('comptes.email.pseudo');
     Route::get('/comptes/name/{name}/email/{email}/pseudo/{pseudo}', [PrivateController::class, 'comptesNameEmailPseudo'])->name('comptes.name.email.pseudo');
 
+    Route::get('/get/password/{id}', [PrivateController::class, 'getPassword'])->name('get.password');
+
     /* Ajoute, modifie et supprime des comptes */
     Route::post('/compte/add', [PrivateController::class, 'addCompte'])->name('compte.add');
     Route::post('/compte/edit', [PrivateController::class, 'editCompte'])->name('compte.edit');

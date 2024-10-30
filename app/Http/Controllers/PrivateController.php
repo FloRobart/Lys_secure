@@ -158,7 +158,7 @@ class PrivateController extends Controller
 
             /* Chiffrement des mots de passe */
             foreach ($comptes as $compte) {
-                $compte->password = openssl_encrypt($compte->password, env('KEY_CIPHERING'), $new_key, env('KEY_OPTIONS'), env('KEY_ENCRYPTION_IV'));
+                $compte->password = $this->encryptPassword($this->decryptPassword($compte->id), $new_key);
                 if (!$compte->save()) {
                     return back()->with('error', 'Une erreur est survenue lors de la modification de la clé de cryptage.');
                 }
@@ -409,12 +409,10 @@ class PrivateController extends Controller
         $compte->name = ucfirst($request->name);
         $compte->email = $request->email;
         $compte->pseudo = $request->pseudo ?? '-';
-        
+
         /* Chiffrement du mot de passe */
-        $encryption_key = session()->get('key'); /* Clé de chiffrement */
-        $compte->password = openssl_encrypt($request->password, env('KEY_CIPHERING'), $encryption_key, env('KEY_OPTIONS'), env('KEY_ENCRYPTION_IV'));
-        
-        
+        $compte->password = $this->encryptPassword($request->password);
+
         /* Sauvegarde du compte */
         if ($compte->save()) {
             return back()->with('success', 'Le compte a été ajouté avec succès 👍.')->with('message', $message);
@@ -468,8 +466,7 @@ class PrivateController extends Controller
         $compte->pseudo = $request->pseudo ?? '-';
 
         /* Chiffrement du mot de passe */
-        $encryption_key = session()->get('key'); /* Clé de chiffrement */
-        $compte->password = openssl_encrypt($request->password, env('KEY_CIPHERING'), $encryption_key, env('KEY_OPTIONS'), env('KEY_ENCRYPTION_IV'));
+        $compte->password = $this->encryptPassword($request->password);
 
         /* Sauvegarde du compte */
         if ($compte->save()) {
@@ -549,7 +546,7 @@ class PrivateController extends Controller
         $content = '| Nom du compte | Identifiant / Email | Mot de passe | Pseudo |' . "\n";
         $content = $content . '|:-------------:|:------------------:|:------------------:|:------------------:|' . "\n";
         foreach ($comptes as $compte) {
-            $content = $content . '| ' . $compte->name . ' | ' . $compte->email . ' | ' . $compte->password . ' | ' . $compte->pseudo . ' |' . "\n";
+            $content = $content . '| ' . $compte->name . ' | ' . $compte->email . ' | ' . $this->decryptPassword($compte->id) . ' | ' . $compte->pseudo . ' |' . "\n";
         }
 
         /* Téléchargement du fichier */
@@ -581,7 +578,6 @@ class PrivateController extends Controller
         $content = file_get_contents($request->file('file')->getRealPath());
 
         /* Ajout des nouveaux comptes */
-        $encryption_key = session()->get('key'); /* Clé de chiffrement */
         $txtComptes = explode("\n", $content);
         $loop = 0;
         $count = 1;
@@ -599,7 +595,7 @@ class PrivateController extends Controller
                     'user_id' => auth()->user()->id,
                     'name' => ucfirst(str_replace('| ', '', $arrayCompte[0], $count)),
                     'email' => strtolower($arrayCompte[1]),
-                    'password' => openssl_encrypt($arrayCompte[2], env('KEY_CIPHERING'), $encryption_key, env('KEY_OPTIONS'), env('KEY_ENCRYPTION_IV')),
+                    'password' => $this->encryptPassword($arrayCompte[2]),
                     'pseudo' => str_replace(' |', '', $arrayCompte[3]),
                 ]);
 
@@ -685,6 +681,17 @@ class PrivateController extends Controller
         }
 
         return $comptes;
+    }
+
+    /**
+     * Encrypte le texte qui lui est passé en paramètre
+     * @param string $texte Texte à chiffrer
+     * @return string Texte chiffré
+     */
+    public function encryptPassword(string $texte, ?string $encryption_key = null)
+    {
+        $encryption_key = $encryption_key == null ? session()->get('key') : $encryption_key;
+        return openssl_encrypt($texte, env('KEY_CIPHERING'), $encryption_key, env('KEY_OPTIONS'), env('KEY_ENCRYPTION_IV'));
     }
 
     /**

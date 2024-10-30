@@ -68,8 +68,10 @@ class PrivateController extends Controller
         session(['key' => $request->password]);
 
         if ($key->save()) {
+            LogController::addLog('Sauvegarde de la clé de cryptage');
             return back()->with('success', 'La clé de cryptage a été sauvegardée avec succès 👍.');
         } else {
+            LogController::addLog('Erreur lors de la sauvegarde de la clé de cryptage', null, 1);
             return back()->with('error', 'Une erreur est survenue lors de la sauvegarde de la clé de cryptage.');
         }
     }
@@ -93,9 +95,12 @@ class PrivateController extends Controller
         $key = Key::where('user_id', auth()->user()->id)->first();
         if ($key && Hash::check($request->password, $key->key)) {
             session(['key' => $request->password]);
+
+            LogController::addLog('Vérification d\'une clé de cryptage correcte');
             return redirect()->route('comptes');
         }
 
+        LogController::addLog('Vérification d\'une clé de cryptage incorrecte', null, 1);
         return back()->with('error', 'Le mot de passe est incorect ❌.');
     }
 
@@ -145,6 +150,7 @@ class PrivateController extends Controller
         /* Vérification de l'ancienne clé de cryptage */
         $key = Key::where('user_id', auth()->user()->id)->first();
         if (!$key || !Hash::check($old_key, $key->key)) {
+            LogController::addLog('Tentative de modification de la clé de cryptage avec une ancienne clé incorrecte', null, 1);
             return back()->with('error', 'Votre mot de passe actuel est incorrect.');
         }
 
@@ -160,6 +166,7 @@ class PrivateController extends Controller
             foreach ($comptes as $compte) {
                 $compte->password = $this->encryptPassword($this->decryptPassword($compte->id), $new_key);
                 if (!$compte->save()) {
+                    LogController::addLog('Erreur lors de la modification de la clé de cryptage', null, 1);
                     return back()->with('error', 'Une erreur est survenue lors de la modification de la clé de cryptage.');
                 }
             }
@@ -167,8 +174,10 @@ class PrivateController extends Controller
             /* Enregistrement de la nouvelle clé de cryptage dans la session */
             session(['key' => $new_key]);
 
+            LogController::addLog('Modification de la clé de cryptage');
             return redirect()->route('comptes')->with('success', 'La clé de cryptage a été modifiée avec succès 👍.');
         } else {
+            LogController::addLog('Erreur lors de la modification de la clé de cryptage', null, 1);
             return back()->with('error', 'Une erreur est survenue lors de la modification de la clé de cryptage.');
         }
     }
@@ -415,8 +424,10 @@ class PrivateController extends Controller
 
         /* Sauvegarde du compte */
         if ($compte->save()) {
+            LogController::addLog('Ajout d\'un compte');
             return back()->with('success', 'Le compte a été ajouté avec succès 👍.')->with('message', $message);
         } else {
+            LogController::addLog('Erreur lors de l\'ajout d\'un compte', null, 1);
             return back()->with('error', 'Une erreur est survenue lors de l\'ajout du compte ❌.');
         }
     }
@@ -470,8 +481,10 @@ class PrivateController extends Controller
 
         /* Sauvegarde du compte */
         if ($compte->save()) {
+            LogController::addLog('Modification du compte id: ' . $compte->id);
             return back()->with('success', 'Le compte a été modifié avec succès 👍.');
         } else {
+            LogController::addLog('Erreur lors de la modification du compte id: ' . $compte->id, null, 1);
             return back()->with('error', 'Une erreur est survenue lors de la modification du compte ❌.');
         }
     }
@@ -496,8 +509,10 @@ class PrivateController extends Controller
 
         /* Suppression de l'compte */
         if ($compte->delete()) {
+            LogController::addLog('Suppression du compte id: ' . $compte->id);
             return back()->with('success', 'Le compte a été supprimé avec succès 👍.');
         } else {
+            LogController::addLog('Erreur lors de la suppression du compte id: ' . $compte->id, null, 1);
             return back()->with('error', 'Une erreur est survenue lors de la suppression du compte ❌.');
         }
     }
@@ -549,6 +564,7 @@ class PrivateController extends Controller
             $content = $content . '| ' . $compte->name . ' | ' . $compte->email . ' | ' . $this->decryptPassword($compte->id) . ' | ' . $compte->pseudo . ' |' . "\n";
         }
 
+        LogController::addLog('Téléchargement du fichier des comptes');
         /* Téléchargement du fichier */
         return response($content)
             ->header('Content-Type', 'text/plain')
@@ -602,11 +618,13 @@ class PrivateController extends Controller
 
                 if (!$compte->save())
                 {
+                    LogController::addLog('Erreur lors de l\'ajout du compte n°' . $count . ' depuis un fichier text', null, 1);
                     return back()->with('error', 'Une erreur est survenue lors de l\'ajout des comptes ❌.');
                 }
             }
         }
 
+        LogController::addLog('Ajout des comptes depuis un fichier text');
         return back()->with('success', 'Les comptes ont été ajoutés avec succès 👍.');
     }
 

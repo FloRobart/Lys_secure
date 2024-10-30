@@ -291,6 +291,9 @@
         </form>
     </div>
 </section>
+
+{{-- Enregistrement du log --}}
+{{ App\Http\Controllers\LogController::addLog('Affichage de la liste des comptes de l\'utilisateur'); }}
 @endsection
 
 @section('scripts')

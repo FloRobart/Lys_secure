@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Models\AdresseIP;
 
+
 class VerifIP
 {
     /**

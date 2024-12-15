@@ -446,7 +446,7 @@ class PrivateController extends Controller
             'id' => 'required|numeric|min:1|exists:account_manager.accounts,id',
             'name' => 'required|string|min:1|max:255',
             'email' => 'required|string|min:1|max:255',
-            'password' => 'required|string|min:1|max:255',
+            'password' => 'nullable|string|min:1|max:255',
             'pseudo' => 'nullable|string|min:1|max:255',
         ], [
             'id.required' => 'L\'id est obligatoire.',
@@ -461,7 +461,6 @@ class PrivateController extends Controller
             'email.string' => 'L\'email doit être une chaîne de caractères.',
             'email.min' => 'L\'email doit contenir au moins 1 caractère.',
             'email.max' => 'L\'email ne doit pas dépasser 255 caractères.',
-            'password.required' => 'Le mot de passe est obligatoire.',
             'password.string' => 'Le mot de passe doit être une chaîne de caractères.',
             'password.min' => 'Le mot de passe doit contenir au moins 1 caractère.',
             'password.max' => 'Le mot de passe ne doit pas dépasser 255 caractères.',
@@ -477,7 +476,9 @@ class PrivateController extends Controller
         $compte->pseudo = $request->pseudo ?? '-';
 
         /* Chiffrement du mot de passe */
-        $compte->password = $this->encryptPassword($request->password);
+        if ($request->password != null) {
+            $compte->password = $this->encryptPassword($request->password);
+        }
 
         /* Sauvegarde du compte */
         if ($compte->save()) {

@@ -10,7 +10,7 @@
 
 @section('content')
 <!-- Titre de la page -->
-<livewire:page-title :title="'Changement de mot de passe'" />
+@include('components.page-title', ['title' = 'Changement de mot de passe']) />
 
 <!-- Messages d'erreur et de succès -->
 <div class="colCenterContainer mt-8 px-4">
@@ -23,7 +23,7 @@
             </ul>
         </div>
     @endif
-    <livewire:information-message />
+    @include('components.information-message')
 </div>
 
 <!-- Formulaire de connexion -->
@@ -32,7 +32,7 @@
         @csrf
         <!-- Mot de passe actuel -->
         <div>
-            <label for="current_password" class="labelForm">Mot de passe actuel <livewire:asterisque /></label>
+            <label for="current_password" class="labelForm">Mot de passe actuel @include('components.asterisque')</label>
             <div class="relative">
                 <input name="current_password" id="current_password" type="password" minlength="4" maxlength="20" autocomplete="current-password" class="inputForm" placeholder="Entrez votre mot de passe" value="" required>
                 <button type="button" class="absolute top-0 end-0 p-1 min-[380px]:p-2 rounded-e-md" title="Afficher le mot de passe" onclick="showCurrentPassword()">
@@ -54,12 +54,12 @@
         <h2 class="bigText text-center pt-6">Nouveau mot de passe</h2>
         <div class="pb-8">
             <!-- Nouveau mot de passe -->
-            <livewire:password-input :confirmation="false" :newPassword="true" />
+            @include('components.password-input', ['confirmation' = false, 'newPassword' = true])
 
             <div class="mt-4"></div>
 
             <!-- confirmation du mot de passe -->
-            <livewire:password-input :confirmation="true" :newPassword="true" />
+            @include('components.password-input', ['confirmation' = true, 'newPassword' = true])
 
             <!-- Générer un mot de passe -->
             <div class="flex items-center justify-end">
@@ -75,7 +75,7 @@
 
     <!-- précision -->
     <div class="smallRowStartContainer mt-3">
-        <livewire:asterisque />
+        @include('components.asterisque')
         <span class="smallText ml-1">Champs obligatoires</span>
     </div>
 </section>

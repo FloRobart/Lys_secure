@@ -64,9 +64,6 @@ class PrivateController extends Controller
         $key->user_id = auth()->user()->id;
         $key->key = Hash::make($request->password);
 
-        /* Enregistrement de la clé de cryptage dans la session */
-        session(['key' => $request->password]);
-
         if ($key->save()) {
             LogController::addLog('Sauvegarde de la clé de cryptage');
             return back()->with('success', 'La clé de cryptage a été sauvegardée avec succès 👍.');
@@ -94,7 +91,6 @@ class PrivateController extends Controller
         /* Vérification de la clé de cryptage */
         $key = Key::where('user_id', auth()->user()->id)->first();
         if ($key && Hash::check($request->password, $key->key)) {
-            session(['key' => $request->password]);
 
             LogController::addLog('Vérification d\'une clé de cryptage correcte');
             return redirect()->route('comptes');
@@ -170,9 +166,6 @@ class PrivateController extends Controller
                     return back()->with('error', 'Une erreur est survenue lors de la modification de la clé de cryptage.');
                 }
             }
-
-            /* Enregistrement de la nouvelle clé de cryptage dans la session */
-            session(['key' => $new_key]);
 
             LogController::addLog('Modification de la clé de cryptage');
             return redirect()->route('comptes')->with('success', 'La clé de cryptage a été modifiée avec succès 👍.');

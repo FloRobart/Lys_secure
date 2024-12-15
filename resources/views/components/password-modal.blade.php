@@ -13,17 +13,18 @@
             </button>
         </form>
 
-        <form method="POST" action="{{ route('connexionSave') }}" class="smallColCenterContainer w-full">
+        <form method="POST" action="{{ route('key.check') }}" class="smallColCenterContainer w-full">
             @csrf
-            <input type="hidden" id="email" name="email" value="{{ $email }}">
+            <!-- Compte -->
+            <input id="account_id" type="hidden" name="account" value="">
 
             <!-- Mot de passe -->
             <div>
-                <livewire:password-input :confirmation="'false'" :newPassword="'false'" />
+                @include('components.password-input', ['confirmation' => 'false', 'newPassword' => 'false'])
 
-                <!-- lien vers la page de mot de passe oublié -->
+                <!-- lien vers la page de changement de clé -->
                 <div class="smallRowEndContainer">
-                    <a href="{{ route('resetPassword.emailRequest') }}" class="font fontSizeSmall colorFontBleuLogo font-bold hover:underline" title="Cliquez si vous avez oublié votre mot de passe">Mot de passe oublié ?</a>
+                    <a href="{{ route('key.change') }}" class="font fontSizeSmall colorFontBleuLogo font-bold hover:underline" title="Cliquez si vous avez oublié votre mot de passe">Mot de passe oublié ?</a>
                 </div>
             </div>
 

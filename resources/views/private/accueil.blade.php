@@ -11,7 +11,7 @@
 
 @section('content')
 <!-- Titre de la page -->
-<livewire:page-title :title="'Bienvenue sur votre gestionnaire de comptes !'" />
+@include('components.page-title', ['title' = 'Bienvenue sur votre gestionnaire de comptes !']) />
 
 <!-- Messages d'erreur et de succès -->
 <div class="colCenterContainer mt-8 px-4">
@@ -24,7 +24,7 @@
             </ul>
         </div>
     @endif
-    <livewire:information-message />
+    @include('components.information-message');
 </div>
 
 
@@ -35,7 +35,7 @@
             <form action="{{ route('key.check') }}" method="POST" class="colCenterContainer">
                 @csrf
                 <div class="colCenterContainer">
-                    <livewire:password-input :confirmation="'false'" :newPassword="'false'" />
+                    @include('components.password-input', ['confirmation' = false, 'newPassword' = false])
                     <a href="{{ route('key.change') }}" class="smallTextBleuLogo text-end link font-bold">Changer mon mot de passe</a>
                 </div>
                 <div class="rowCenterContainer mt-10">
@@ -54,11 +54,11 @@
             <form action="{{ route('key.save') }}" method="POST" class="colCenterContainer space-y-6">
                 @csrf
                 <div class="colCenterContainer">
-                    <livewire:password-input :confirmation="'false'" :newPassword="'true'" />
+                    @include('components.password-input', ['confirmation' = false, 'newPassword' = true])
                 </div>
 
                 <div class="colCenterContainer">
-                    <livewire:password-input :confirmation="'true'" :newPassword="'true'" />
+                    @include('components.password-input', ['confirmation' = true, 'newPassword' = true])
                 </div>
 
                 <div class="rowCenterContainer">

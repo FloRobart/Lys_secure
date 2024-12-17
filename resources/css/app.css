@@ -49,6 +49,7 @@
     .bigText                { @apply font fontSizeBig    colorFont        ; }
     .bigTextReverse         { @apply font fontSizeBig    colorFontReverse ; }
     .bigTextBleuLogo        { @apply font fontSizeBig    colorFontBleuLogo; }
+    .bigTextAlert           { @apply font fontSizeBig    fontColorAlert   ; }
     .normalText             { @apply font fontSizeNormal colorFont        ; }
     .normalTextReverse      { @apply font fontSizeNormal colorFontReverse ; }
     .normalTextBleuLogo     { @apply font fontSizeNormal colorFontBleuLogo; }

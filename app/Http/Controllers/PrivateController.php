@@ -101,7 +101,7 @@ class PrivateController extends Controller
         $key = Key::where('user_id', Auth::user()->id)->first();
         if ($key && Hash::check($request->password, $key->key)) {
             LogController::addLog('Vérification d\'une clé de sécurité correcte');
-            return redirect()->route('comptes')->with(['account_id' => $compte->id, 'account_password' => $this->decryptPassword($compte->id, $key->key)]);
+            return back()->with(['account_id' => $compte->id, 'account_password' => $this->decryptPassword($compte->id, $key->key)]);
         }
 
         LogController::addLog('Vérification d\'une clé de sécurité incorrecte', null, 1);

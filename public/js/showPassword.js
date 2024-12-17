@@ -3,7 +3,9 @@
  * Copyright (C) 2024 Floris Robart <florobart.github@gmail.com>
  */
 
-/* Affichage du mot de passe */
+/**
+ * Affichage du mot de passe
+ */
 function showPassword()
 {
     /* Définition des variables */

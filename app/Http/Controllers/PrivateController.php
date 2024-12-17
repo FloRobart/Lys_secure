@@ -684,7 +684,7 @@ class PrivateController extends Controller
      * @param string $order
      * @return \Illuminate\Database\Eloquent\Collection $comptes
      */
-    public function getComptes(string $name, string $email, string $pseudo, ?string $sort = 'created_at', ?string $order = 'desc')
+    public function getComptes(string $name, string $email, string $pseudo, ?string $sort = 'id', ?string $order = 'desc')
     {
         $comptes = Account::where('user_id', Auth::user()->id)->orderBy($sort, $order)->get();
 
@@ -718,7 +718,7 @@ class PrivateController extends Controller
      * @param string $order
      * @param \Illuminate\Database\Eloquent\Collection $comptes
      */
-    public function getComptesSearch($comptes, string $search, string $sort = 'created_at', $order = 'desc')
+    public function getComptesSearch($comptes, string $search, string $sort = 'id', $order = 'desc')
     {
         $decrypt = $comptes == null || $comptes->isEmpty();
         $comptes = $comptes ?? Account::where('user_id', Auth::user()->id)->orderBy($sort, $order)->get();

@@ -201,7 +201,7 @@ class PrivateController extends Controller
     {
         setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
 
-        $sort = $request->query('sort') ?? 'created_at';
+        $sort = $request->query('sort') ?? 'id';
         $order = $request->query('order') ?? 'desc';
         $search = $request->query('search') ?? '';
 
@@ -222,7 +222,7 @@ class PrivateController extends Controller
     {
         setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
 
-        $sort = $request->query('sort') ?? 'created_at';
+        $sort = $request->query('sort') ?? 'id';
         $order = $request->query('order') ?? 'desc';
         $search = $request->query('search') ?? '';
 
@@ -243,7 +243,7 @@ class PrivateController extends Controller
     {
         setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
 
-        $sort = $request->query('sort') ?? 'created_at';
+        $sort = $request->query('sort') ?? 'id';
         $order = $request->query('order') ?? 'desc';
         $search = $request->query('search') ?? '';
 
@@ -264,7 +264,7 @@ class PrivateController extends Controller
     {
         setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
 
-        $sort = $request->query('sort') ?? 'created_at';
+        $sort = $request->query('sort') ?? 'id';
         $order = $request->query('order') ?? 'desc';
         $search = $request->query('search') ?? '';
 
@@ -286,7 +286,7 @@ class PrivateController extends Controller
     {
         setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
 
-        $sort = $request->query('sort') ?? 'created_at';
+        $sort = $request->query('sort') ?? 'id';
         $order = $request->query('order') ?? 'desc';
         $search = $request->query('search') ?? '';
 
@@ -308,7 +308,7 @@ class PrivateController extends Controller
     {
         setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
 
-        $sort = $request->query('sort') ?? 'created_at';
+        $sort = $request->query('sort') ?? 'id';
         $order = $request->query('order') ?? 'desc';
         $search = $request->query('search') ?? '';
 
@@ -330,7 +330,7 @@ class PrivateController extends Controller
     {
         setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
 
-        $sort = $request->query('sort') ?? 'created_at';
+        $sort = $request->query('sort') ?? 'id';
         $order = $request->query('order') ?? 'desc';
         $search = $request->query('search') ?? '';
 
@@ -353,7 +353,7 @@ class PrivateController extends Controller
     {
         setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
 
-        $sort = $request->query('sort') ?? 'created_at';
+        $sort = $request->query('sort') ?? 'id';
         $order = $request->query('order') ?? 'desc';
         $search = $request->query('search') ?? '';
 

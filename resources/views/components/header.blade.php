@@ -92,11 +92,11 @@
         <div id="breadcrumb" class="rowStartContainer px-4 min-[550px]:px-6 sm:px-14">
             <!-- Accueil -->
             <a href="{{ route('accueil.general') }}" class="tinyTextReverse sm:smallTextReverse">Accueil</a>
-            @include('components.breadcrumb-link', ['name' = 'Gestionnaire de comptes', 'link' = route('accueil')]) />
+            @include('components.breadcrumb-link', ['name' => 'Gestionnaire de comptes', 'link' => route('accueil')])
 
             @foreach ($breadcrumb as $key => $value)
                 @if (str_contains(strtolower($urlPath), $key))
-                    @include('components.breadcrumb-link', ['name' = ucfirst($key), 'link' = $value]) />
+                    @include('components.breadcrumb-link', ['name' => ucfirst($key), 'link' => $value])
                 @endif
             @endforeach
         </div>

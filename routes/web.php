@@ -10,24 +10,16 @@ use App\Http\Middleware\VerifIP;
 
 
 
-/*-----------------------------*/
+/*=============================*/
 /* Route pour les utilisateurs */
 /*      PrivateController      */
-/*-----------------------------*/
+/*=============================*/
 Route::middleware(['auth', VerifIP::class])->group(function () {
-    /*=========*/
+    /*---------*/
     /* Accueil */
-    /*=========*/
+    /*---------*/
     /* Route vers l'accueil du gestionnaire */
     Route::get('/', [PrivateController::class, 'accueil'])->name('accueil');
-    Route::get('/accueil', [PrivateController::class, 'accueil'])->name('accueil');
-
-    /* Route pour la clé de cryptage */
-    Route::post('/key/save', [PrivateController::class, 'saveKey'])->name('key.save');
-    Route::post('/key/check', [PrivateController::class, 'checkKey'])->name('key.check');
-
-    /* Route vers l'accueil général du serveur */
-    Route::get('/accueil/general', function () { return redirect(env('HOME_SERVER_MAISON') . '/private/accueil'); })->name('accueil.general');
 
 
     /*--------*/
@@ -36,17 +28,20 @@ Route::middleware(['auth', VerifIP::class])->group(function () {
     Route::get('/profil', function () { return redirect(env('HOME_SERVER_MAISON') . '/profil'); })->name('profil');
 
 
-    /*----------------------------------*/
-    /* Changement de la clé de cryptage */
-    /*----------------------------------*/
+    /*-----------------*/
+    /* Clé de sécurité */
+    /*-----------------*/
+    /* Enregistrement de la clé de sécurité */
+    Route::post('/key/save', [PrivateController::class, 'saveKey'])->name('key.save');
+
+    /* Changement de la clé de sécurité */
     Route::get('/key/change', [PrivateController::class, 'changeKey'])->name('key.change');
     Route::post('/key/change', [PrivateController::class, 'changeKeySave'])->name('key.change.save');
 
 
-
-    /*=========================*/
+    /*-------------------------*/
     /* Gestionnaire de comptes */
-    /*=========================*/
+    /*-------------------------*/
     /* Affiche des comptes */
     Route::get('/comptes', [PrivateController::class, 'comptes'])->name('comptes');
     Route::get('/comptes/name/{name}', [PrivateController::class, 'comptesName'])->name('comptes.name');
@@ -57,17 +52,26 @@ Route::middleware(['auth', VerifIP::class])->group(function () {
     Route::get('/comptes/email/{email}/pseudo/{pseudo}', [PrivateController::class, 'comptesEmailPseudo'])->name('comptes.email.pseudo');
     Route::get('/comptes/name/{name}/email/{email}/pseudo/{pseudo}', [PrivateController::class, 'comptesNameEmailPseudo'])->name('comptes.name.email.pseudo');
 
-    Route::get('/get/password/{id}', [PrivateController::class, 'getPassword'])->name('get.password');
-
     /* Ajoute, modifie et supprime des comptes */
     Route::post('/compte/add', [PrivateController::class, 'addCompte'])->name('compte.add');
     Route::post('/compte/edit', [PrivateController::class, 'editCompte'])->name('compte.edit');
     Route::get('/compte/remove/{id}', [PrivateController::class, 'removeCompte'])->name('compte.remove');
 
     /* Route liée au téléchargement des comptes */
-    Route::get('/comptes/mes_comptes.md', [PrivateController::class, 'downloadComptes'])->name('comptes.download');
+    Route::post('/comptes/mes_comptes.md', [PrivateController::class, 'downloadComptes'])->name('comptes.download');
     Route::post('/comptes/upload', [PrivateController::class, 'uploadComptes'])->name('comptes.upload');
+
+    /* Récupération des mots de passe */
+    Route::post('/get/password', [PrivateController::class, 'getPassword'])->name('get.password');
 });
+
+
+
+/*========================*/
+/* Route pour les invités */
+/*========================*/
+/* Route vers l'accueil général du serveur */
+Route::get('/accueil/general', function () { return redirect(env('HOME_SERVER_MAISON') . '/private/accueil'); })->name('accueil.general');
 
 /* Route pour la redirection en cas de mauvaise authentification */
 Route::get('/redirection', function () { return redirect(env('HOME_SERVER_MAISON')); })->name('login');

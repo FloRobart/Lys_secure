@@ -11,7 +11,7 @@
 
 @section('content')
 <!-- Titre de la page -->
-<livewire:page-title :title="'Gestionnaire de comptes'" />
+@include('components.page-title', ['title' => 'Gestionnaire de comptes'])
 
 <!-- Messages d'erreur et de succès -->
 <div class="colCenterContainer mt-8 px-4">
@@ -24,7 +24,7 @@
             </ul>
         </div>
     @endif
-    <livewire:information-message />
+    @include('components.information-message')
 </div>
 
 
@@ -81,7 +81,7 @@
     </div>
 
     <!-- Barre de séparation -->
-    <livewire:horizontal-separation />
+    @include('components.horizontal-separation')
 
     <div class="colCenterContainer">
         <!-- Titre du tableau -->
@@ -151,40 +151,29 @@
                             @endif
                             
                             <!-- Mot de passe -->
-                            <td>
-                                <!-- Composant AlpineJS pour afficher le mot de passe -->
-                                <div class="tableCell rowCenterContainer" x-data="{ password: '' }">
-                                    <!-- SVG à cliquer pour afficher le mot de passe -->
-                                    <div class="w-fit link" title="Afficher le mot de passe"
-                                        onclick="this.getElementsByTagName('div')[0].classList.toggle('hidden')"
-                                        @click="fetch('/get/password/{{ $compte->id }}')
-                                            .then(response => response.text())
-                                            .then(data => password = data)">
-
-                                        <div class="smallRowCenterContainer">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="tinySizeIcons">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88" />
-                                            </svg>
+                            @if (session()->has('account_id') && session()->get('account_id') == $compte->id)
+                                <!-- Affichage du mot de passe -->
+                                <td id="visible_password" class="tableCell tooltip md:mt-[-18px] lg:mt-[-25px] xl:mt-[-30px]">
+                                    <button title="copier le mot de passe" class="link text-black" onclick="copyToClipboard(this, '{{ str_replace('\'', '\\\'', session()->get('account_password')) }}', '{{ session()->pull('account_id') }}')" onmouseout="tooltip({{ $compte->id }})">
+                                        <span id="myTooltip_{{ $compte->id }}" class="tooltiptext">Copier le mot de passe</span>
+                                        {{ session()->pull('account_password') }}
+                                    </button>
+                                </td>
+                            @else
+                                <!-- SVG à cliquer pour afficher le mot de passe -->
+                                <td>
+                                    <div class="tableCell rowCenterContainer">
+                                        <div class="w-fit link" title="Afficher le mot de passe" onclick="password_modal('{{ $compte->id }}', null, null)">
+                                            <div class="smallRowCenterContainer">
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="tinySizeIcons">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88" />
+                                                </svg>
+                                            </div>
                                         </div>
                                     </div>
+                                </td>
+                            @endif
 
-                                    <!-- Affichage du mot de passe -->
-                                    <span>
-                                        <button x-text="password" id="myTooltip_{{ $compte->id }}" title="copier le mot de passe" class="link" 
-                                                onclick="
-                                                    fetch('/get/password/{{ $compte->id }}')
-                                                        .then(response => response.text())
-                                                        .then(data => {
-                                                            password = data;
-                                                            copyToClipboard(password, '{{ $compte->id }}');
-                                                        });
-                                                "
-                                                onmouseout="tooltip({{ $compte->id }})">
-                                        </button>
-                                    </span>
-                                </div>
-                            </td>
-                            
                             <!-- Pseudo -->
                             @if (str_contains(strtolower(URL::current()), 'pseudo'))
                                 <td class="tableCell"><a title="Afficher les comptes avec le pseudo {{ $compte->pseudo }}" href="{{ route('comptes.pseudo', ['pseudo' => $compte->pseudo]) }}" class="link">{{ $compte->pseudo }}</a></td>
@@ -243,11 +232,29 @@
             @csrf
             <div class="colCenterContainer">
                 <div class="colStartContainer lg:rowStartContainer">
-                    <input id="name"     name="name"     required type="text" placeholder="Nom du compte" class="w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
-                    <input id="email"    name="email"    required type="text" placeholder="Identifiant"   class="w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
-                    <input id="password" name="password"          type="text" placeholder="Mot de passe"  class="w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
-                    <input id="pseudo"   name="pseudo"            type="text" placeholder="Pseudo"        class="w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
+                    <input id="name"   name="name"     required type="text" placeholder="Nom du compte" class="w-[80%] lg:w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText" autofocus>
+                    <input id="email"  name="email"    required type="text" placeholder="Identifiant"   class="w-[80%] lg:w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
+                    <input             name="password"          type="text" placeholder="Mot de passe"  class="w-[80%] lg:w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
+                    <input id="pseudo" name="pseudo"            type="text" placeholder="Pseudo"        class="w-[80%] lg:w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
                 </div>
+
+                <!-- Clé de sécurité -->
+                <div class="relative w-[80%] lg:w-[55%] my-6">
+                    <input type="password" name="key" id="key" class="inputForm text-center smallText" autocomplete="current-password" placeholder="Clé de sécurité" required>
+                    <button type="button" class="absolute top-0 end-0 p-1 min-[380px]:p-2 rounded-e-md" title="Afficher la clé de sécurité" onclick="showKey()">
+                        <!-- Icône eye fermé -->
+                        <svg id="key_svgEyeClose1" class="colorFont fontSizeIcons" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88" />
+                        </svg>
+
+                        <!-- Icône eye ouvert -->
+                        <svg id="key_svgEyeOpen1" class="hidden colorFont fontSizeIcons" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                        </svg>
+                    </button>
+                </div>
+
                 <button type="button" class="buttonForm" onclick="passwordGenerator()">Générer un mot de passe</button>
                 <button type="submit" id="formButton" class="buttonForm mx-2 min-[500px]:mx-4 my-2">Ajouter</button>
                 <div class="w-full tableRowTop"></div>
@@ -271,46 +278,106 @@
 
                 $param = ['name' => $url_name];
             @endphp
+        @else
+            @php $param = ['name' => 'null']; @endphp
         @endif
-        @if (str_contains(strtolower(URL::current()), 'email' )) @php $param += ['email'  => $comptes->first()->email ]; @endphp @endif
-        @if (str_contains(strtolower(URL::current()), 'pseudo')) @php $param += ['pseudo' => $comptes->first()->pseudo]; @endphp @endif
         @php
-            $param += ['search' => request()->get('search')];
-            $param += ['sort'   => request()->get('sort')];
-            $param += ['order'  => request()->get('order')];
+            $param += ['email'  => str_contains(strtolower(URL::current()), 'email' ) ? $comptes->first()->email : 'null' ];
+            $param += ['pseudo' => str_contains(strtolower(URL::current()), 'pseudo') ? $comptes->first()->pseudo : 'null'];
+            $param += ['search' => request()->get('search') ?? 'null'];
+            $param += ['sort'   => request()->get('sort') ?? 'null'];
+            $param += ['order'  => request()->get('order') ?? 'null'];
         @endphp
-        
+
         <!-- sauvegarder les comptes dans un fichier texte (Markdown) -->
-        <a href="{{ route('comptes.download', $param) }}" class="buttonForm">Sauvegarder les comptes dans un fichier texte</a>
+        {{-- <a href="{{ route('comptes.download', $param) }}" class="buttonForm">Sauvegarder les comptes dans un fichier texte</a> --}}
+        <button type="button" onclick="password_modal(null, '{{ implode('***', $param) }}', '***')" class="buttonForm">Sauvegarder les comptes dans un fichier texte</button>
 
         <!-- Charger les comptes depuis un fichier texte -->
-        <form id="fileForm" action="{{ route('comptes.upload') }}" method="POST" class="colCenterContainer" enctype="multipart/form-data">
-            @csrf
-            <label for="file" class="buttonForm mt-8 cursor-pointer">Charger les comptes depuis un fichier texte</label>
-            <input type="file" id="file" name="file" class="hidden" accept=".txt,.md" onchange="validFileForm()">
-        </form>
+        @include('components.password-file-modal')
     </div>
 </section>
+
+<!-- Modal -->
+@include('components.password-modal')
 
 {{-- Enregistrement du log --}}
 {{ App\Http\Controllers\LogController::addLog('Affichage de la liste des comptes de l\'utilisateur'); }}
 @endsection
 
+@section('styles')
+<style>
+    /* Style pour le message lors de la copie du mot de passe */
+    .tooltip {
+        position: relative;
+        display: inline-block;
+    }
+
+    .tooltip .tooltiptext {
+        visibility: hidden;
+        width: 100px;
+        margin-left: -50px;
+        @media (min-width: 768px) { width: 300px; margin-left: -150px; }
+        background-color: #555;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px;
+        position: absolute;
+        z-index: 1;
+        bottom: 150%;
+        left: 50%;
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+
+    .tooltip .tooltiptext::after {
+        content: "";
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        margin-left: -5px;
+        border-width: 5px;
+        border-style: solid;
+        border-color: #555 transparent transparent transparent;
+    }
+
+    .tooltip:hover .tooltiptext {
+        visibility: visible;
+        opacity: 1;
+    }
+</style>
+@endsection
+
 @section('scripts')
 <script src="{{ asset('js/showForm.js') }}"></script>
 <script src="{{ asset('js/passwordGenerator.js') }}"></script>
+<script src="{{ asset('js/showPassword.js') }}"></script>
+<script src="{{ asset('js/showKey.js') }}"></script>
 <script>
     oldId = 0;
 
     /**
-     * Permet de scroll jusqu'à la barre de recherche
+     * Permet de scroll dans la page
      */
     onload = function() {
+        /* Scroll jusqu'à la barre de recherche */
         if ('{{ request()->get('search') }}' != '' || '{{ request()->get('sort') }}' != '') {
             document.getElementById('inputSearch').scrollIntoView();
         }
-    }
 
+        /* Scroll jusqu'au compte avec le mot de passe visible */
+        if ('{{ session()->get('account_id') }}' != '' || '{{ session()->get('account_id') }}' != null) {
+            visible_password = document.getElementById('visible_password');
+            if (visible_password != null) { visible_password.scrollIntoView(); }
+        }
+    };
+
+
+
+    /*===================================*/
+    /* Ajout et modification d'un compte */
+    /*===================================*/
     /**
      * Permet de modifier un compte
      */
@@ -327,7 +394,6 @@
         /* Remplissage du formulaire */
         document.getElementById('name').value = name;
         document.getElementById('email').value = email;
-        document.getElementById('password').value = password;
         document.getElementById('pseudo').value = pseudo;
 
         if (document.getElementById('id') != null) {
@@ -339,6 +405,84 @@
         oldId = id;
     }
 
+
+
+    /*======================*/
+    /* Affichage des modals */
+    /*======================*/
+    /**
+     * Permet d'afficher la modal pour rentrer la clé de sécurité
+     * @param {int|null} account_id : id du compte pour lequel on veut afficher le mot de passe
+     * @param {string|null} download_param : paramètres pour le téléchargement du fichier texte
+     * @param {string|null} param_separator : séparateur pour les paramètres
+     */
+    function password_modal(account_id, download_param, param_separator) {
+        document.getElementById('password_modal').showModal();
+        password_modal_form = document.getElementById('password_modal_form');
+
+        /* Remplissage des champs pour l'affichage du mot de passe d'un compte */
+        if (account_id != null) {
+            document.getElementById('account_id').value = account_id;
+            password_modal_form.action = "{{ route('get.password') }}";
+        }
+
+        /* Remplissage des champs pour le téléchargement du fichier texte */
+        if (download_param != null && param_separator != null) {
+            document.getElementById('download_param').value = download_param;
+            document.getElementById('param_separator').value = param_separator;
+            password_modal_form.action = "{{ route('comptes.download') }}";
+        }
+    }
+
+    /**
+     * Permet d'afficher la modal pour rentrer la clé de sécurité après avoir téléchargé un fichier
+     */
+    function password_file_modal() {
+        document.getElementById('password_file_modal').showModal();
+    }
+
+    /**
+     * Permet de fermer la modal pour rentrer la clé de sécurité après avoir téléchargé un fichier
+     */
+    function close_password_file_modal() {
+        document.getElementById('password_file_modal').close();
+    }
+
+    /**
+      * Affichage du mot de passe
+      */
+    function show_password2() {
+        /* Input password */
+        var passwordInput1 = document.getElementById("password_file_key");
+
+        /* SVG eyes open */
+        var svgEyeOpen1 = document.getElementById("svgEyeOpen0");
+
+        /* SVG eyes close */
+        var svgEyeClose1 = document.getElementById("svgEyeClose0");
+
+        /* Affichage du mot de passe + modification de l'icône */
+        if (passwordInput1.type === "password")
+        {
+            /* Affichage du mot de passe */
+            passwordInput1.type = "text";
+            svgEyeOpen1.classList.remove("hidden");
+            svgEyeClose1.classList.add("hidden");
+        }
+        else
+        {
+            /* Masquage du mot de passe */
+            passwordInput1.type = "password";
+            svgEyeOpen1.classList.add("hidden");
+            svgEyeClose1.classList.remove("hidden");
+        }
+    }
+
+
+
+    /*=======================*/
+    /* Copie du mot de passe */
+    /*=======================*/
     /**
      * Copie le texte passé en paramètre dans le presse-papier du système quand il n'y a pas de connexion sécurisée (HTTPS)
      */
@@ -351,12 +495,10 @@
         try {
             document.execCommand('copy')
         } catch(err) {
-            console.error('Une erreur est survenu lors de la copie du mot de passe', err)
+            console.error('Unable to copy to clipboard',err)
         }
-
         document.getElementById("row_" + id).removeChild(textArea);
-        document.getElementById("myTooltip_" + id).classList.remove('text-black');
-        document.getElementById("myTooltip_" + id).classList.add('fontColorValid');
+        document.getElementById("myTooltip_" + id).innerHTML = "Mot de passe copié";
     };
 
     /**
@@ -364,31 +506,34 @@
      * Check if using HTTPS and navigator.clipboard is available
      * Then uses standard clipboard API, otherwise uses fallback
     */
-    const copyToClipboard = (content, id) => {
+    const copyToClipboard = (button, content, id) => {
         if (window.isSecureContext && navigator.clipboard) {
             navigator.clipboard.writeText(content);
         } else {
             unsecuredCopyToClipboard(content, id);
         }
 
-        document.getElementById("myTooltip_" + id).classList.remove('text-black');
-        document.getElementById("myTooltip_" + id).classList.add('fontColorValid');
+        document.getElementById("myTooltip_" + id).innerHTML = "Mot de passe copié";
+        button.classList.remove('text-black');
+        button.classList.add('fontColorValid');
     };
 
     /**
      * Permet de modifier le message lors de la copie du mot de passe
      */
-    function tooltip(id)
-    {
-        document.getElementById("myTooltip_" + id).classList.remove('fontColorValid');
-        document.getElementById("myTooltip_" + id).classList.add('text-black');
+    function tooltip(id) {
+        document.getElementById("myTooltip_" + id).innerHTML = "Copier le mot de passe";
     }
 
+
+
+    /*===========*/
+    /* Recherche */
+    /*===========*/
     /**
      * Permet de rechercher un compte
      */
-    function search(url)
-    {
+    function search(url) {
         inputSearchValue = document.getElementById('inputSearch').value;
         window.location.href = url + inputSearchValue;
     }
@@ -396,19 +541,22 @@
     /**
      * Permet de rechercher un compte lors de l'appui sur la touche "Entrée"
      */
-    function inputSearch()
-    {
+    function inputSearch() {
         if (event.key === 'Enter') {
             search('{{ URL::current() . '?search=' }}');
         }
     }
 
+
+
+    /*=========*/
+    /* Fichier */
+    /*=========*/
     /**
      * Permet de charger un fichier texte
      * Redirige vers la route de charger de fichier texte (comptes.upload) avec le fichier texte en paramètre (avec la méthode POST)
      */
-    function validFileForm()
-    {
+    function validFileForm() {
         document.getElementById('fileForm').submit();
     }
 </script>

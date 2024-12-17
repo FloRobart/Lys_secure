@@ -5,6 +5,7 @@
 
 <dialog id="password_modal" class="modal rounded-xl p-6">
     <div class="modal-box">
+        <!-- Bouton de fermeture de la modal -->
         <form method="dialog" class="flex justify-end items-center w-full">
             <button class="cursor-pointer">
                 <svg class="fontSizeIcons" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -13,18 +14,20 @@
             </button>
         </form>
 
-        <form method="POST" action="{{ route('key.check') }}" class="smallColCenterContainer w-full">
+        <form id="password_modal_form" method="POST" action="" class="smallColCenterContainer w-full">
             @csrf
-            <!-- Compte -->
-            <input id="account_id" type="hidden" name="account" value="">
+            <!-- Données utile pour le formulaire -->
+            <input type="hidden" id="account_id"      name="account_id">
+            <input type="hidden" id="download_param"  name="download_param">
+            <input type="hidden" id="param_separator" name="param_separator">
 
-            <!-- Mot de passe -->
+            <!-- Clé de sécurité -->
             <div>
-                @include('components.password-input', ['confirmation' => 'false', 'newPassword' => 'false'])
+                @include('components.password-input', ['confirmation' => false, 'newPassword' => false])
 
                 <!-- lien vers la page de changement de clé -->
                 <div class="smallRowEndContainer">
-                    <a href="{{ route('key.change') }}" class="font fontSizeSmall colorFontBleuLogo font-bold hover:underline" title="Cliquez si vous avez oublié votre mot de passe">Mot de passe oublié ?</a>
+                    <a href="{{ route('key.change') }}" class="font fontSizeSmall colorFontBleuLogo font-bold hover:underline" title="Cliquez si vous voulez changer votre clé de sécurité">Changer ma clé de sécurité</a>
                 </div>
             </div>
 

@@ -103,7 +103,7 @@
                     <th class="tableCell" title="Trier par ordre @if ($order == 'asc') alphabétique @else anti-alphabétique @endif de l'email"><a href="{{ URL::current() . '?sort=email&order=' . $order . '&search=' . request()->get('search') }}">Identifiant / Email</a></th>
                     <th class="tableCell">Mot de passe</th>
                     <th class="tableCell" title="Trier par ordre @if ($order == 'asc') alphabétique @else anti-alphabétique @endif du pseudo"><a href="{{ URL::current() . '?sort=pseudo&order=' . $order . '&search=' . request()->get('search') }}">Pseudo</a></th>
-                    <th class="tableCell max-md:hidden" title="Trier par ordre chronologique"><a href="{{ URL::current() . '?sort=created_at&order=' . $order . '&search=' . request()->get('search') }}">Actions</a></th>
+                    <th class="tableCell max-md:hidden" title="Trier par ordre chronologique"><a href="{{ URL::current() . '?sort=id&order=' . $order . '&search=' . request()->get('search') }}">Actions</a></th>
                 </tr>
             </thead>
 

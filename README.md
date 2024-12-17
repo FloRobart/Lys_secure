@@ -98,7 +98,6 @@
 - **Frameworks et librairies :**
   - Laravel
   - Tailwind CSS
-  - Livewire
 
 ## Installation
 

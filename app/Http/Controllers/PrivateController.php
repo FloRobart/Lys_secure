@@ -576,7 +576,7 @@ class PrivateController extends Controller
         $email  = $param[1] != 'null' ? $param[1] : '';
         $pseudo = $param[2] != 'null' ? $param[2] : '';
         $search = $param[3] != 'null' ? $param[3] : '';
-        $sort   = $param[4] != 'null' ? $param[4] : 'created_at';
+        $sort   = $param[4] != 'null' ? $param[4] : 'id';
         $order  = $param[5] != 'null' ? $param[5] : 'desc';
 
         /* Récupération des comptes */
@@ -740,29 +740,64 @@ class PrivateController extends Controller
     }
 
     /**
+     * Récupère la clé de chiffrement
+     * @param string $userKey Clé de sécurité entrée par l'utilisateur
+     * @return string Clé de chiffrement
+     */
+    function getEncryptionKey(string $user_key)
+    {
+        if ($user_key == null || !Auth::check()) { return null; }
+        $encryptionKey = hash(env('KEY_HASHING'), $user_key) . $user_key . env('KEY_SALT') . hash(env('KEY_HASHING'), (env('KEY_SALT') . Auth::user()->id));
+        $encryptionKey .= hash(env('KEY_HASHING'), $encryptionKey);
+
+        return $encryptionKey;
+    }
+
+    /**
      * Encrypte le texte qui lui est passé en paramètre
      * @param string $texte Texte à chiffrer
-     * @param string $encryption_key Clé de chiffrement
-     * @return string Texte chiffré
+     * @param string $encryption_key Clé de sécurité entrée par l'utilisateur
+     * @return string Texte chiffré + vecteur d'initialisation (IV) le tout en base 64
      */
-    public function encryptPassword(string $texte, string $encryption_key)
+    public function encryptPassword(string $texte, string $user_key)
     {
-        return openssl_encrypt($texte, env('KEY_CIPHERING'), $encryption_key, env('KEY_OPTIONS'), env('KEY_ENCRYPTION_IV'));
+        /* Récupération de la clé de chiffrement à partir de la clé utilisateur */
+        $encryptionKey = $this->getEncryptionKey($user_key);
+        if (!$encryptionKey) { return null; }
+
+        /* Génération du vecteur d'initialisation (IV) */
+        $keyEncryptionIv = openssl_random_pseudo_bytes(openssl_cipher_iv_length(env('KEY_CIPHERING')));
+
+        /* Chiffrement du texte */
+        $encryptionText  = openssl_encrypt($texte, env('KEY_CIPHERING'), $encryptionKey, OPENSSL_RAW_DATA, $keyEncryptionIv);
+
+        /* Retourne le texte chiffré en base 64 */
+        return base64_encode($keyEncryptionIv . $encryptionText);
     }
 
     /**
      * Décrypte le mot de passe correspondant au compte
      * @param int $id Id du compte
-     * @param string $encryption_key Clé de chiffrement
+     * @param string $encryption_key Clé de sécurité entrée par l'utilisateur
      * @return string|null Mot de passe déchiffré ou null si le compte n'existe pas
      */
-    public function decryptPassword(int $id, string $encryption_key)
+    public function decryptPassword(int $id, string $user_key)
     {
-        $compte = Account::find($id);
-        if ($compte) {
-            return openssl_decrypt($compte->password, env('KEY_CIPHERING'), $encryption_key, env('KEY_OPTIONS'), env('KEY_ENCRYPTION_IV'));
-        }
+        /* Récupération de la clé de chiffrement à partir de la clé utilisateur */
+        $encryptionKey = $this->getEncryptionKey($user_key);
 
-        return null;
+        /* Récupération du compte correspondant à l'id */
+        $compte = Account::find($id);
+        if (!$compte || !$encryptionKey) { return null; }
+
+        /* Décodage du texte codé en base 64 */
+        $decodedText = base64_decode($compte->password);
+
+        /* Séparation du vecteur d'initialisation (IV) et du texte chiffré */
+        $extractedIv = substr($decodedText, 0, openssl_cipher_iv_length(env('KEY_CIPHERING')));
+        $extractedCiphertext = substr($decodedText, openssl_cipher_iv_length(env('KEY_CIPHERING')));
+
+        /* Retourne le texte déchiffré */
+        return openssl_decrypt($extractedCiphertext, env('KEY_CIPHERING'), $encryptionKey, OPENSSL_RAW_DATA, $extractedIv);
     }
 }

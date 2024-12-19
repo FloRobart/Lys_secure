@@ -101,7 +101,7 @@ class PrivateController extends Controller
         $key = Key::where('user_id', Auth::user()->id)->first();
         if ($key && Hash::check($request->password, $key->key)) {
             LogController::addLog('Vérification d\'une clé de sécurité correcte');
-            return back()->with(['account_id' => $compte->id, 'account_password' => $this->decryptPassword($compte->id, $key->key)]);
+            return back()->with(['account_id' => $compte->id, 'account_password' => $this->decryptPassword($compte->id, $request->password)]);
         }
 
         LogController::addLog('Vérification d\'une clé de sécurité incorrecte', null, 1);
@@ -433,7 +433,7 @@ class PrivateController extends Controller
         $compte->pseudo = $request->pseudo ?? '-';
 
         /* Chiffrement du mot de passe */
-        $compte->password = $this->encryptPassword($request->password, $key->key);
+        $compte->password = $this->encryptPassword($request->password, $request->key);
 
         /* Sauvegarde du compte */
         if ($compte->save()) {
@@ -502,7 +502,7 @@ class PrivateController extends Controller
 
         /* Chiffrement du mot de passe */
         if ($request->password != null) {
-            $compte->password = $this->encryptPassword($request->password, $key->key);
+            $compte->password = $this->encryptPassword($request->password, $request->key);
         }
 
         /* Sauvegarde du compte */
@@ -587,7 +587,7 @@ class PrivateController extends Controller
         $content  = '| Nom du compte | Identifiant / Email | Mot de passe | Pseudo |' . "\n";
         $content .= '|:-------------:|:-------------------:|:------------:|:------:|' . "\n";
         foreach ($comptes as $compte) {
-            $content = $content . '| ' . $compte->name . ' | ' . $compte->email . ' | ' . $this->decryptPassword($compte->id, $key->key) . ' | ' . $compte->pseudo . ' |' . "\n";
+            $content = $content . '| ' . $compte->name . ' | ' . $compte->email . ' | ' . $this->decryptPassword($compte->id, $request->password) . ' | ' . $compte->pseudo . ' |' . "\n";
         }
 
         LogController::addLog('Téléchargement du fichier des comptes');
@@ -649,7 +649,7 @@ class PrivateController extends Controller
                     'user_id' => Auth::user()->id,
                     'name' => ucfirst(str_replace('| ', '', $arrayCompte[0], $count)),
                     'email' => strtolower($arrayCompte[1]),
-                    'password' => $this->encryptPassword($arrayCompte[2], $key->key),
+                    'password' => $this->encryptPassword($arrayCompte[2], $request->password_file_key),
                     'pseudo' => str_replace(' |', '', $arrayCompte[3]),
                 ]);
 

@@ -23,7 +23,6 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->string('key');
-            $table->timestamps();
         });
     }
 

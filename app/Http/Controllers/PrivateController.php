@@ -8,7 +8,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Account;
 use App\Models\Key;
-use App\Models\Log;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -23,6 +22,7 @@ class PrivateController extends Controller
      * Affiche l'accueil
      * @return \Illuminate\View\View private.accueil | pour la première connexion
      * @return \Illuminate\Http\RedirectResponse comptes | pour les autres connexions
+     * @method GET
      */
     public function accueil()
     {
@@ -40,6 +40,7 @@ class PrivateController extends Controller
      * Sauvegarde la clé de sécurité
      * @param Request $request
      * @return \Illuminate\Http\RedirectResponse Retourne la page précédente
+     * @method POST
      */
     public function saveKey(Request $request)
     {
@@ -76,6 +77,7 @@ class PrivateController extends Controller
      * Vérifie la clé de sécurité
      * @param Request $request
      * @return \Illuminate\Http\RedirectResponse comptes | avec l'id et le mot de passe d'un des comptes
+     * @method POST
      */
     public function getPassword(Request $request)
     {
@@ -111,6 +113,7 @@ class PrivateController extends Controller
     /**
      * Permet de générer un mot de passe aléatoire sécurisé
      * @return string Mot de passe généré
+     * @method GET
      */
     public function getNewPassword()
     {
@@ -144,6 +147,17 @@ class PrivateController extends Controller
         return $password;
     }
 
+    /**
+     * Modifie plusieurs mots de passe en une seule fois
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse Retourne la page précédente
+     * @method POST
+     */
+    public function modifyPassword(Request $request)
+    {
+
+    }
+
 
     /*----------------------------------*/
     /* Changement de la clé de sécurité */
@@ -151,6 +165,7 @@ class PrivateController extends Controller
     /**
      * Affiche la page de changement de la clé de sécurité
      * @return \Illuminate\View\View private.change_key
+     * @method GET
      */
     public function changeKey()
     {
@@ -161,6 +176,7 @@ class PrivateController extends Controller
      * Sauvegarde la nouvelle clé de sécurité et encrypte les mots de passe avec la nouvelle clé
      * @param Request $request
      * @return \Illuminate\Http\RedirectResponse comptes
+     * @method POST
      */
     public function changeKeySave(Request $request)
     {
@@ -230,6 +246,7 @@ class PrivateController extends Controller
      * Affiche tous les comptes
      * @param Request $request
      * @return \Illuminate\View\View private.compte
+     * @method GET
      */
     public function comptes(Request $request)
     {
@@ -251,6 +268,7 @@ class PrivateController extends Controller
      * @param Request $request
      * @param string $name Nom du compte
      * @return \Illuminate\View\View private.compte
+     * @method GET
      */
     public function comptesName(Request $request, string $name)
     {
@@ -272,6 +290,7 @@ class PrivateController extends Controller
      * @param Request $request
      * @param string $email Identifiant du compte
      * @return \Illuminate\View\View private.compte
+     * @method GET
      */
     public function comptesEmail(Request $request, string $email)
     {
@@ -293,6 +312,7 @@ class PrivateController extends Controller
      * @param Request $request
      * @param string $pseudo Pseudo du compte
      * @return \Illuminate\View\View private.compte
+     * @method GET
      */
     public function comptesPseudo(Request $request, string $pseudo)
     {
@@ -315,6 +335,7 @@ class PrivateController extends Controller
      * @param string $name Nom du compte
      * @param string $email Identifiant du compte
      * @return \Illuminate\View\View private.compte
+     * @method GET
      */
     public function comptesNameEmail(Request $request, string $name, string $email)
     {
@@ -337,6 +358,7 @@ class PrivateController extends Controller
      * @param string $name Nom du compte
      * @param string $pseudo Pseudo du compte
      * @return \Illuminate\View\View private.compte
+     * @method GET
      */
     public function comptesNamePseudo(Request $request, string $name, string $pseudo)
     {
@@ -359,6 +381,7 @@ class PrivateController extends Controller
      * @param string $email Identifiant du compte
      * @param string $pseudo Pseudo du compte
      * @return \Illuminate\View\View private.compte
+     * @method GET
      */
     public function comptesEmailPseudo(Request $request, string $email, string $pseudo)
     {
@@ -382,6 +405,7 @@ class PrivateController extends Controller
      * @param string $email Identifiant du compte
      * @param string $pseudo Pseudo du compte
      * @return \Illuminate\View\View private.compte
+     * @method GET
      */
     public function comptesNameEmailPseudo(Request $request, string $name, string $email, string $pseudo)
     {
@@ -407,6 +431,7 @@ class PrivateController extends Controller
      * Ajoute un compte
      * @param Request $request
      * @return \Illuminate\Http\RedirectResponse Retourne la page précédente
+     * @method POST
      */
     public function addCompte(Request $request)
     {
@@ -482,6 +507,7 @@ class PrivateController extends Controller
      * Modifie un compte
      * @param Request $request
      * @return \Illuminate\Http\RedirectResponse Retourne la page précédente
+     * @method POST
      */
     public function editCompte(Request $request)
     {
@@ -557,6 +583,7 @@ class PrivateController extends Controller
      * Supprime un compte
      * @param string $id Id du compte
      * @return \Illuminate\Http\RedirectResponse Retourne la page précédente
+     * @method GET
      */
     public function removeCompte(string $id)
     {
@@ -593,6 +620,7 @@ class PrivateController extends Controller
      * Télécharge le fichier des comptes
      * @param Request $request
      * @return \Illuminate\Http\Response Retourne le fichier
+     * @method POST
      */
     public function downloadComptes(Request $request)
     {
@@ -641,6 +669,7 @@ class PrivateController extends Controller
      * Charger le fichier des comptes
      * @param Request $request
      * @return \Illuminate\Http\RedirectResponse Retourne la page précédente
+     * @method POST
      */
     public function uploadComptes(Request $request)
     {

@@ -16,6 +16,6 @@
 
     <!-- Copiright -->
     <div class="rowCenterContainer space-x-1 mb-4">
-        <span class="tinyTextReverse">© <script>document.write(new Date().getFullYear())</script> <a href="https://florobart.github.io/" target="_blank"><b>Floris Robart</b></a></span>
+        <span class="tinyTextReverse">© 2024 - <script>document.write(new Date().getFullYear())</script> <a href="https://florobart.github.io/" target="_blank"><b>Floris Robart</b></a></span>
     </div>
 </footer>

@@ -19,7 +19,7 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions) {
         $exceptions->respond(function (Response $response) {
-            if ($response->getStatusCode() < 400) {
+            if ($response->getStatusCode() < 400 || $response->getStatusCode() != 419) {
                 return $response;
             }
 

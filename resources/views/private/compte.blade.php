@@ -290,8 +290,7 @@
         @endphp
 
         <!-- sauvegarder les comptes dans un fichier texte (Markdown) -->
-        {{-- <a href="{{ route('comptes.download', $param) }}" class="buttonForm">Sauvegarder les comptes dans un fichier texte</a> --}}
-        <button type="button" onclick="password_modal(null, '{{ implode('***', $param) }}', '***')" class="buttonForm">Sauvegarder les comptes dans un fichier texte</button>
+        <button type="button" onclick="password_modal(null, '{{ implode('*****', $param) }}', '*****')" class="buttonForm">Sauvegarder les comptes dans un fichier texte</button>
 
         <!-- Charger les comptes depuis un fichier texte -->
         @include('components.password-file-modal')

@@ -33,9 +33,9 @@ class PrivateController extends Controller
 
 
 
-    /*------------------*/
-    /* Gestion des clés */
-    /*------------------*/
+    /*-----------------------------------*/
+    /* Gestion des clés et Mots de passe */
+    /*-----------------------------------*/
     /**
      * Sauvegarde la clé de sécurité
      * @param Request $request
@@ -108,6 +108,41 @@ class PrivateController extends Controller
         return back()->with('error', 'Le clé de sécurité est incorect ❌.');
     }
 
+    /**
+     * Permet de générer un mot de passe aléatoire sécurisé
+     * @return string Mot de passe généré
+     */
+    public function getNewPassword()
+    {
+        /* Définit la longueur du mot de passe */
+        $length = random_int(env('PASSWORD_MIN_LENGTH', 12), env('PASSWORD_MIN_LENGTH', 12) + 6);
+
+        /* Définit les ensembles de caractères autorisés */
+        $lowercase = 'abcdefghijklmnopqrstuvwxyz';
+        $uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $numbers = '0123456789';
+        $specialChars = '!@#$%&*()-_=+[]{}|;:,.<>?';
+        $allChars = str_shuffle($lowercase . $uppercase . $numbers . $specialChars);
+
+        /* Construction du mot de passe avec des caractères aléatoires sécurisés */
+        $password  = $lowercase[random_int(0, strlen($lowercase) - 1)];
+        $password .= $uppercase[random_int(0, strlen($uppercase) - 1)];
+        $password .= $numbers[random_int(0, strlen($numbers) - 1)];
+        $password .= $specialChars[random_int(0, strlen($specialChars) - 1)];
+
+        /* Ajout des caractères aléatoires restants */
+        for ($i = 4; $i < $length; $i++) {
+            $password .= $allChars[random_int(0, strlen($allChars) - 1)];
+        }
+
+        /* Mélanger les caractères pour éviter un ordre prévisible */
+        for ($i=0; $i < random_int(1, 100); $i++) {
+            $password = str_shuffle($password);
+        }
+
+        /* Retourne le mot de passe */
+        return $password;
+    }
 
 
     /*----------------------------------*/

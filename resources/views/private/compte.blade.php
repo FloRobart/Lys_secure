@@ -232,10 +232,10 @@
             @csrf
             <div class="colCenterContainer">
                 <div class="colStartContainer lg:rowStartContainer">
-                    <input id="name"   name="name"     required type="text" placeholder="Nom du compte" class="w-[80%] lg:w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText" autofocus>
-                    <input id="email"  name="email"    required type="text" placeholder="Identifiant"   class="w-[80%] lg:w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
-                    <input             name="password"          type="text" placeholder="Mot de passe"  class="w-[80%] lg:w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
-                    <input id="pseudo" name="pseudo"            type="text" placeholder="Pseudo"        class="w-[80%] lg:w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
+                    <input id="name"            name="name"     required type="text" placeholder="Nom du compte" class="w-[80%] lg:w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText" autofocus>
+                    <input id="email"           name="email"    required type="text" placeholder="Identifiant"   class="w-[80%] lg:w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
+                    <input id="accountPassword" name="password"          type="text" placeholder="Mot de passe"  class="w-[80%] lg:w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
+                    <input id="pseudo"          name="pseudo"            type="text" placeholder="Pseudo"        class="w-[80%] lg:w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
                 </div>
 
                 <!-- Clé de sécurité -->
@@ -348,7 +348,6 @@
 
 @section('scripts')
 <script src="{{ asset('js/showForm.js') }}"></script>
-<script src="{{ asset('js/passwordGenerator.js') }}"></script>
 <script src="{{ asset('js/showPassword.js') }}"></script>
 <script src="{{ asset('js/showKey.js') }}"></script>
 <script>
@@ -400,6 +399,20 @@
         document.getElementById('form').scrollIntoView();
 
         oldId = id;
+    }
+
+    /**
+     * Permet de générer un mot de passe aléatoire
+     */
+    async function passwordGenerator() {
+        try {
+            const response = await fetch('{{ route('get.new.password') }}');
+            if (!response.ok) throw new Error('Erreur lors de la récupération');
+            document.getElementById('accountPassword').value = await response.text();
+        } catch (error) {
+            console.error('Erreur : ', error);
+            console.log('Si vous vouyez ce message, prenez une capture d\'écran et contactez l\'administrateur');
+        }
     }
 
 

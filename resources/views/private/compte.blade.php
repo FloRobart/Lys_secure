@@ -163,7 +163,7 @@
                                 <!-- SVG à cliquer pour afficher le mot de passe -->
                                 <td>
                                     <div class="tableCell rowCenterContainer">
-                                        <div class="w-fit link" title="Afficher le mot de passe" onclick="password_modal('{{ $compte->id }}', null, null)">
+                                        <div class="w-fit link" title="Afficher le mot de passe" onclick="password_modal('{{ route('get.password') }}', '{{ $compte->id }}', null, null)">
                                             <div class="smallRowCenterContainer">
                                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="tinySizeIcons">
                                                     <path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88" />
@@ -289,8 +289,11 @@
             $param += ['order'  => request()->get('order') ?? 'null'];
         @endphp
 
-        <!-- sauvegarder les comptes dans un fichier texte (Markdown) -->
-        <button type="button" onclick="password_modal(null, '{{ implode('*****', $param) }}', '*****')" class="buttonForm">Sauvegarder les comptes dans un fichier texte</button>
+        <!-- Changement de tout les mots de passe -->
+        <button type="button" onclick="password_modal('{{ route('modify.password') }}', null, '{{ implode('*****', $param) }}', '*****')" class="buttonForm">Changer tout les mots de passe qui sont affiché</button>
+
+        <!-- Sauvegarder les comptes dans un fichier texte (Markdown) -->
+        <button type="button" onclick="password_modal('{{ route('comptes.download') }}', null, '{{ implode('*****', $param) }}', '*****')" class="buttonForm mt-8">Sauvegarder les comptes dans un fichier texte</button>
 
         <!-- Charger les comptes depuis un fichier texte -->
         @include('components.password-file-modal')
@@ -421,26 +424,28 @@
     /*======================*/
     /**
      * Permet d'afficher la modal pour rentrer la clé de sécurité
+     * @param {string} route : route vers laquelle on veut envoyer le formulaire
      * @param {int|null} account_id : id du compte pour lequel on veut afficher le mot de passe
      * @param {string|null} download_param : paramètres pour le téléchargement du fichier texte
      * @param {string|null} param_separator : séparateur pour les paramètres
      */
-    function password_modal(account_id, download_param, param_separator) {
+    function password_modal(route, account_id, download_param, param_separator) {
         document.getElementById('password_modal').showModal();
         password_modal_form = document.getElementById('password_modal_form');
 
         /* Remplissage des champs pour l'affichage du mot de passe d'un compte */
         if (account_id != null) {
             document.getElementById('account_id').value = account_id;
-            password_modal_form.action = "{{ route('get.password') }}";
+            
         }
 
         /* Remplissage des champs pour le téléchargement du fichier texte */
         if (download_param != null && param_separator != null) {
             document.getElementById('download_param').value = download_param;
             document.getElementById('param_separator').value = param_separator;
-            password_modal_form.action = "{{ route('comptes.download') }}";
         }
+
+        password_modal_form.action = route;
     }
 
     /**

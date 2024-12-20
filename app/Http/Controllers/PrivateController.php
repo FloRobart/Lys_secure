@@ -26,6 +26,8 @@ class PrivateController extends Controller
      */
     public function accueil()
     {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
         $key = Key::where('user_id', Auth::user()->id)->first();
         LogController::addLog("Connexion de " . Auth::user()->name . " (" . Auth::user()->id . ") {accueil}", Auth::user()->id, 0);
         return $key == null ? view('private.accueil') : redirect()->route('comptes');
@@ -44,6 +46,8 @@ class PrivateController extends Controller
      */
     public function saveKey(Request $request)
     {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
         /* Validation des données */
         $request->validate([
             'password' => 'required|string|min:' . env('KEY_MIN_LENGTH', 12) . '|max:255|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).*$/',
@@ -81,6 +85,8 @@ class PrivateController extends Controller
      */
     public function getPassword(Request $request)
     {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
         /* Validation des données */
         $request->validate([
             'account_id' => 'required|min:1|exists:account_manager.accounts,id',
@@ -117,6 +123,8 @@ class PrivateController extends Controller
      */
     public function getNewPassword()
     {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
         /* Définit la longueur du mot de passe */
         $length = random_int(env('PASSWORD_MIN_LENGTH', 12), env('PASSWORD_MIN_LENGTH', 12) + 6);
 
@@ -155,7 +163,44 @@ class PrivateController extends Controller
      */
     public function modifyPassword(Request $request)
     {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
 
+        $request->validate([
+            'download_param' => 'required|string',
+            'param_separator' => 'required|string',
+            'password' => 'required|string',
+        ]);
+
+        /* Vérification de la clé de sécurité */
+        $key = Key::where('user_id', Auth::user()->id)->first();
+        if (!$key || !Hash::check($request->password, $key->key)) {
+            LogController::addLog("Tentative de modification des comptes avec une clé de sécurité incorrecte {modifyPassword}", Auth::user()->id, 1);
+            return back()->with('error', 'La clé de sécurité est incorrecte ❌.');
+        }
+
+        /* Récupération des informations */
+        $param = explode($request->param_separator, urldecode($request->download_param));
+        $name   = $param[0] != 'null' ? $param[0] : '';
+        $email  = $param[1] != 'null' ? $param[1] : '';
+        $pseudo = $param[2] != 'null' ? $param[2] : '';
+        $search = $param[3] != 'null' ? $param[3] : '';
+        $sort   = $param[4] != 'null' ? $param[4] : 'id';
+        $order  = $param[5] != 'null' ? $param[5] : 'desc';
+
+        /* Récupération des comptes */
+        $comptes = PrivateController::getComptes($name, $email, $pseudo, $sort, $order);
+        if ($search != '') { $comptes = PrivateController::getComptesSearch($comptes, $search, $sort, $order); }
+
+        /* Modification des mots de passe */
+        foreach ($comptes as $compte) {
+            $compte->password = $this->encryptPassword($this->getNewPassword(), $request->password);
+            if (!$compte->save()) {
+                LogController::addLog("Erreur lors de la modification d'un mot de passe {modifyPassword}", Auth::user()->id, 2);
+                return back()->with('error', 'Une erreur est survenue lors de la modification des mots de passe ❌.');
+            }
+        }
+
+        return back()->with('success', 'Les mots de passe ont été modifiés avec succès 👍.');
     }
 
 
@@ -169,6 +214,8 @@ class PrivateController extends Controller
      */
     public function changeKey()
     {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
         return view('private.change_key');
     }
 
@@ -180,6 +227,8 @@ class PrivateController extends Controller
      */
     public function changeKeySave(Request $request)
     {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
         /* Validation des données */
         $request->validate([
             'current_password' => 'required|string',
@@ -640,7 +689,7 @@ class PrivateController extends Controller
         }
 
         /* Récupération des informations */
-        $param = explode($request->param_separator, $request->download_param);
+        $param = explode($request->param_separator, urldecode($request->download_param));
         $name   = $param[0] != 'null' ? $param[0] : '';
         $email  = $param[1] != 'null' ? $param[1] : '';
         $pseudo = $param[2] != 'null' ? $param[2] : '';

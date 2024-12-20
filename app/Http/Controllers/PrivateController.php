@@ -63,10 +63,9 @@ class PrivateController extends Controller
         $key->key = Hash::make($request->password);
 
         if ($key->save()) {
-            LogController::addLog('Sauvegarde de la clé de sécurité');
             return back()->with('success', 'La clé de sécurité a été sauvegardée avec succès 👍.');
         } else {
-            LogController::addLog('Erreur lors de la sauvegarde de la clé de sécurité', null, 1);
+            LogController::addLog("Erreur lors de la sauvegarde de la clé de sécurité {saveKey}", Auth::user()->id, 1);
             return back()->with('error', 'Une erreur est survenue lors de la sauvegarde de la clé de sécurité.');
         }
     }
@@ -93,18 +92,17 @@ class PrivateController extends Controller
         /* Vérification du propriétaire du compte */
         $compte = Account::find($request->account_id);
         if ($compte->user_id != Auth::user()->id) {
-            LogController::addLog('Tentative de récupération d\'un mot de passe d\'un compte qui n\'appartient pas à la personne connecté', null, 1);
+            LogController::addLog("Tentative de récupération d'un mot de passe du compte de $compte->name ($compte->user_id) par " . Auth::user()->name . '(' . Auth::user()->id . ') {getPassword}', $compte->user_id, 2);
             return back()->with('error', 'Ce compte ne vous appartient pas et cette action a été reportée à l\'administrateur ❌.');
         }
 
         /* Vérification de la clé de sécurité */
         $key = Key::where('user_id', Auth::user()->id)->first();
         if ($key && Hash::check($request->password, $key->key)) {
-            LogController::addLog('Vérification d\'une clé de sécurité correcte');
             return back()->with(['account_id' => $compte->id, 'account_password' => $this->decryptPassword($compte->id, $request->password)]);
         }
 
-        LogController::addLog('Vérification d\'une clé de sécurité incorrecte', null, 1);
+        LogController::addLog("Vérification d'une clé de sécurité incorrecte {getPassword}", Auth::user()->id, 1);
         return back()->with('error', 'Le clé de sécurité est incorect ❌.');
     }
 
@@ -154,7 +152,7 @@ class PrivateController extends Controller
         /* Vérification de l'ancienne clé de sécurité */
         $key = Key::where('user_id', Auth::user()->id)->first();
         if (!$key || !Hash::check($old_key, $key->key)) {
-            LogController::addLog('Tentative de modification de la clé de sécurité avec une ancienne clé incorrecte', null, 1);
+            LogController::addLog("Tentative de modification de la clé de sécurité avec une ancienne clé incorrecte {changeKeySave}", Auth::user()->id, 1);
             return back()->with('error', 'Votre clé de sécurité actuel est incorrect.');
         }
 
@@ -170,15 +168,14 @@ class PrivateController extends Controller
             foreach ($comptes as $compte) {
                 $compte->password = $this->encryptPassword($this->decryptPassword($compte->id, $old_key), $new_key);
                 if (!$compte->save()) {
-                    LogController::addLog('Erreur lors de la modification de la clé de sécurité', null, 1);
+                    LogController::addLog("Une erreur est survenue lors de la sauvegarde d'un compte pendant la modification de la clé de sécurité {changeKeySave}", Auth::user()->id, 2);
                     return back()->with('error', 'Une erreur est survenue lors de la modification de la clé de sécurité.');
                 }
             }
 
-            LogController::addLog('Modification de la clé de sécurité');
             return redirect()->route('comptes')->with('success', 'La clé de sécurité a été modifiée avec succès 👍.');
         } else {
-            LogController::addLog('Erreur lors de la modification de la clé de sécurité', null, 1);
+            LogController::addLog("Une erreur est survenue lors de l'enregistrement de la nouvelle clé de sécurité {changeKeySave}", Auth::user()->id, 2);
             return back()->with('error', 'Une erreur est survenue lors de la modification de la clé de sécurité.');
         }
     }
@@ -410,7 +407,7 @@ class PrivateController extends Controller
         /* Vérification de la clé de sécurité */
         $key = Key::where('user_id', Auth::user()->id)->first();
         if (!$key || !Hash::check($request->key, $key->key)) {
-            LogController::addLog('Tentative d\'ajout d\'un compte avec une clé de sécurité incorrecte', null, 1);
+            LogController::addLog("Tentative d'ajout d'un compte avec une clé de sécurité incorrecte {addCompte}", Auth::user()->id, 1);
             return back()->with('error', 'La clé de sécurité est incorrecte ❌.');
         }
 
@@ -437,10 +434,9 @@ class PrivateController extends Controller
 
         /* Sauvegarde du compte */
         if ($compte->save()) {
-            LogController::addLog('Ajout d\'un compte');
             return back()->with('success', 'Le compte a été ajouté avec succès 👍.')->with('message', $message);
         } else {
-            LogController::addLog('Erreur lors de l\'ajout d\'un compte', null, 1);
+            LogController::addLog("Erreur lors de l'ajout d'un compte {addCompte}", Auth::user()->id, 1);
             return back()->with('error', 'Une erreur est survenue lors de l\'ajout du compte ❌.');
         }
     }
@@ -490,12 +486,18 @@ class PrivateController extends Controller
         /* Vérification de la clé de sécurité */
         $key = Key::where('user_id', Auth::user()->id)->first();
         if (!$key || !Hash::check($request->key, $key->key)) {
-            LogController::addLog('Tentative d\'ajout d\'un compte avec une clé de sécurité incorrecte', null, 1);
+            LogController::addLog("Tentative de modification du compte id : $request->id avec une clé de sécurité incorrecte {editCompte}", Auth::user()->id, 1);
             return back()->with('error', 'La clé de sécurité est incorrecte ❌.');
         }
 
-        /* Modification de l'compte */
+        /* Vérification du propriétaire du compte */
         $compte = Account::find($request->id);
+        if ($compte->user_id != Auth::user()->id) {
+            LogController::addLog("Tentative de modification du compte id : $compte->id par " . Auth::user()->name . "(" . Auth::user()->id . ") {editCompte}", Auth::user()->id, 2);
+            return back()->with('error', 'Ce compte ne vous appartient pas et cette action a été reportée à l\'administrateur ❌.');
+        }
+
+        /* Modification de l'compte */
         $compte->name = ucfirst($request->name);
         $compte->email = $request->email;
         $compte->pseudo = $request->pseudo ?? '-';
@@ -507,10 +509,9 @@ class PrivateController extends Controller
 
         /* Sauvegarde du compte */
         if ($compte->save()) {
-            LogController::addLog('Modification du compte id: ' . $compte->id);
             return back()->with('success', 'Le compte a été modifié avec succès 👍.');
         } else {
-            LogController::addLog('Erreur lors de la modification du compte id: ' . $compte->id, null, 1);
+            LogController::addLog("Erreur lors de la modification du compte id : $compte->id {editCompte}", Auth::user()->id, 1);
             return back()->with('error', 'Une erreur est survenue lors de la modification du compte ❌.');
         }
     }
@@ -531,14 +532,17 @@ class PrivateController extends Controller
 
         $compte = Account::find($id);
         if (!$compte) { back()->with('error', 'Le compte n\'existe pas ❌.'); }
-        if ($compte->user_id != Auth::user()->id) { back()->with('error', 'Ce compte ne vous appartient pas ❌.'); }
+        if ($compte->user_id != Auth::user()->id)
+        {
+            LogController::addLog("Tentative de suppression du compte id : $compte->id par " . Auth::user()->name . "(" . Auth::user()->id . ") {removeCompte}", Auth::user()->id, 2);
+            back()->with('error', 'Ce compte ne vous appartient pas ❌.');
+        }
 
         /* Suppression de l'compte */
         if ($compte->delete()) {
-            LogController::addLog('Suppression du compte id: ' . $compte->id);
             return back()->with('success', 'Le compte a été supprimé avec succès 👍.');
         } else {
-            LogController::addLog('Erreur lors de la suppression du compte id: ' . $compte->id, null, 1);
+            LogController::addLog("Erreur lors de la suppression du compte id : $compte->id {removeCompte}", Auth::user()->id, 1);
             return back()->with('error', 'Une erreur est survenue lors de la suppression du compte ❌.');
         }
     }
@@ -557,7 +561,7 @@ class PrivateController extends Controller
     {
         setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
 
-        request()->validate([
+        $request->validate([
             'download_param' => 'required|string',
             'param_separator' => 'required|string',
             'password' => 'required|string',
@@ -566,7 +570,7 @@ class PrivateController extends Controller
         /* Vérification de la clé de sécurité */
         $key = Key::where('user_id', Auth::user()->id)->first();
         if (!$key || !Hash::check($request->password, $key->key)) {
-            LogController::addLog('Tentative de téléchargement du fichier des comptes avec une clé de sécurité incorrecte', null, 1);
+            LogController::addLog("Tentative de téléchargement du fichier des comptes avec une clé de sécurité incorrecte {downloadComptes}", Auth::user()->id, 1);
             return back()->with('error', 'La clé de sécurité est incorrecte ❌.');
         }
 
@@ -590,7 +594,6 @@ class PrivateController extends Controller
             $content = $content . '| ' . $compte->name . ' | ' . $compte->email . ' | ' . $this->decryptPassword($compte->id, $request->password) . ' | ' . $compte->pseudo . ' |' . "\n";
         }
 
-        LogController::addLog('Téléchargement du fichier des comptes');
         /* Téléchargement du fichier */
         return response($content)
             ->header('Content-Type', 'text/plain')
@@ -624,7 +627,7 @@ class PrivateController extends Controller
         /* Vérification de la clé de sécurité */
         $key = Key::where('user_id', Auth::user()->id)->first();
         if (!$key || !Hash::check($request->password_file_key, $key->key)) {
-            LogController::addLog('Tentative d\'ajout de comptes depuis un fichier avec une clé de sécurité incorrecte', null, 1);
+            LogController::addLog("Tentative d'ajout de comptes depuis un fichier avec une clé de sécurité incorrecte", Auth::user()->id, 1);
             return back()->with('error', 'La clé de sécurité est incorrecte ❌.');
         }
 
@@ -656,13 +659,12 @@ class PrivateController extends Controller
 
                 if (!$compte->save())
                 {
-                    LogController::addLog('Erreur lors de l\'ajout du compte n°' . $count . ' depuis un fichier text', null, 1);
+                    LogController::addLog('Erreur lors de l\'ajout du compte n°' . $count . ' depuis un fichier text', Auth::user()->id, 1);
                     return back()->with('error', 'Une erreur est survenue lors de l\'ajout des comptes ❌.');
                 }
             }
         }
 
-        LogController::addLog('Ajout des comptes depuis un fichier text');
         return back()->with('success', 'Les comptes ont été ajoutés avec succès 👍.');
     }
 

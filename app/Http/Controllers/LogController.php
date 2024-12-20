@@ -21,12 +21,12 @@ class LogController extends Controller
      * Permets d'ajouter un log
      * @param string $message
      * @param string|null $user_id l'id de l'utilisateur qui a effectué l'action (si l'utilisateur est connecté, il est automatiquement ajouté)
-     * @param int|null $error 1 si c'est une erreur, 0 si c'est une information ou un succès
+     * @param int|null $error 2 si c'est une activité impossible, 1 si c'est une erreur, 0 si c'est une information ou un succès
      * @return void
      */
     public static function addLog(string $message, ?string $user_id = null, ?int $error = 0): void
     {
-        $user_id = $user_id ?? (Auth::check() ? Auth::user()->id : null);
+        $user_id = $user_id == null ? (Auth::check() ? Auth::user()->id : null) : null;
 
         $log = new Log();
         $log->host = $_SERVER['HTTP_HOST'];
@@ -40,17 +40,18 @@ class LogController extends Controller
         $log->status = $error;
 
         /* Vérification que le log est différent du dernier log */
-        $lastLog = Log::all()->sortByDesc('created_at')->first();
+        $lastLog = Log::all()->sortByDesc('id')->first();
         if ($lastLog != null && $lastLog->status == $log->status && $lastLog->user_id == $log->user_id && $lastLog->ip == $log->ip && $lastLog->link_to == $log->link_to && $lastLog->method_to == $log->method_to) {
             return;
         }
 
-        if (!$log->save()) {
-            Mail::to(env('MAIL_FROM_ADDRESS'))->send(new LogError($log));
+        if ($error == 2) {
+            if (env('APP_ENV') == 'production') { Mail::to(env('MAIL_FROM_ADDRESS'))->send(new LogError($log)); }
         }
 
-        if ($error == 1) {
-            Mail::to(env('MAIL_FROM_ADDRESS'))->send(new LogError($log));
+        if (!$log->save()) {
+            $log->message = 'Erreur lors de l\'enregistrement du log : ' . $log->message;
+            if (env('APP_ENV') == 'production') { Mail::to(env('MAIL_FROM_ADDRESS'))->send(new LogError($log)); }
         }
     }
 }

@@ -300,9 +300,6 @@
 
 <!-- Modal -->
 @include('components.password-modal')
-
-{{-- Enregistrement du log --}}
-{{ App\Http\Controllers\LogController::addLog('Affichage de la liste des comptes de l\'utilisateur'); }}
 @endsection
 
 @section('styles')

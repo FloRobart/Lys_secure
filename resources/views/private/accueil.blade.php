@@ -54,9 +54,6 @@
         </form>
     </div>
 </section>
-
-{{-- Enregistrement du log --}}
-{{ App\Http\Controllers\LogController::addLog('Affichage de la page d\'accueil privée (Page pour rentrer la clé de sécurité)'); }}
 @endsection
 
 @section('scripts')

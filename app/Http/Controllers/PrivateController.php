@@ -8,6 +8,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Account;
 use App\Models\Key;
+use App\Models\Log;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -26,6 +27,7 @@ class PrivateController extends Controller
     public function accueil()
     {
         $key = Key::where('user_id', Auth::user()->id)->first();
+        LogController::addLog("Connexion de " . Auth::user()->name . " (" . Auth::user()->id . ") {accueil}", Auth::user()->id, 0);
         return $key == null ? view('private.accueil') : redirect()->route('comptes');
     }
 

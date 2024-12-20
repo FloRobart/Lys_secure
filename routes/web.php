@@ -67,6 +67,7 @@ Route::middleware(['auth', VerifIP::class])->group(function () {
     /* Récupération des mots de passe */
     Route::post('/get/password', [PrivateController::class, 'getPassword'])->name('get.password');
     Route::get('/get/new/password', [PrivateController::class, 'getNewPassword'])->name('get.new.password');
+    Route::post('/modify/password', [PrivateController::class, 'modifyPassword'])->name('modify.password');
 });
 
 

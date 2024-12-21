@@ -630,25 +630,42 @@ class PrivateController extends Controller
 
     /**
      * Supprime un compte
-     * @param string $id Id du compte
+     * @param Request $request
      * @return \Illuminate\Http\RedirectResponse Retourne la page précédente
-     * @method GET
+     * @method POST
      */
-    public function removeCompte(string $id)
+    public function removeCompte(Request $request)
     {
         setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
 
-        /* Validation des données */
-        if ($id == null) { back()->with('error', 'l\'id est null ❌.'); }
-        if (!is_numeric($id)) { back()->with('error', 'l\'id n\'est pas un nombre ❌.'); }
-        if ($id <= 0) { back()->with('error', 'l\'id est inférieur ou égal à 0 ❌.'); }
+        $request->validate([
+            'account_id' => 'required|numeric|min:1|exists:account_manager.accounts,id',
+            'password' => 'required|string|min:1|max:255',
+        ], [
+            'id.required' => 'L\'id est obligatoire.',
+            'id.numeric' => 'L\'id doit être un nombre.',
+            'id.min' => 'L\'id doit être supérieur à 0.',
+            'id.exists' => 'L\'id n\'existe pas.',
+            'password.required' => 'La clé de sécurité est obligatoire.',
+            'password.string' => 'La clé de sécurité doit être une chaîne de caractères.',
+            'password.min' => 'La clé de sécurité doit contenir au moins 1 caractère.',
+            'password.max' => 'La clé de sécurité ne doit pas dépasser 255 caractères.',
+        ]);
 
-        $compte = Account::find($id);
+        /* Vérification de la clé de sécurité */
+        $key = Key::where('user_id', Auth::user()->id)->first();
+        if (!$key || !Hash::check($request->password, $key->key)) {
+            LogController::addLog("Tentative de suppression du compte id : $request->account_id avec une clé de sécurité incorrecte {removeCompte}", Auth::user()->id, 1);
+            return back()->with('error', 'La clé de sécurité est incorrecte ❌.');
+        }
+
+        /* Vérification du propriétaire du compte */
+        $compte = Account::find($request->account_id);
         if (!$compte) { back()->with('error', 'Le compte n\'existe pas ❌.'); }
         if ($compte->user_id != Auth::user()->id)
         {
             LogController::addLog("Tentative de suppression du compte id : $compte->id par " . Auth::user()->name . "(" . Auth::user()->id . ") {removeCompte}", Auth::user()->id, 2);
-            back()->with('error', 'Ce compte ne vous appartient pas ❌.');
+            return back()->with('error', 'Ce compte ne vous appartient pas ❌.');
         }
 
         /* Suppression de l'compte */

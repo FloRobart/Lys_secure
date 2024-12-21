@@ -231,11 +231,14 @@
         <form id="form" action="{{ route('compte.add') }}" method="POST" class="rowStartContainer hidden">
             @csrf
             <div class="colCenterContainer">
-                <div class="colStartContainer lg:rowStartContainer">
-                    <input id="name"            name="name"     required type="text" placeholder="Nom du compte" class="w-[80%] lg:w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText" autofocus>
-                    <input id="email"           name="email"    required type="text" placeholder="Identifiant"   class="w-[80%] lg:w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
-                    <input id="accountPassword" name="password"          type="text" placeholder="Mot de passe"  class="w-[80%] lg:w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
-                    <input id="pseudo"          name="pseudo"            type="text" placeholder="Pseudo"        class="w-[80%] lg:w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
+                <div class="grid grid-cols-1 lg:grid-cols-4 gap-x-4">
+                    <input id="name"            name="name"     required type="text" placeholder="Nom du compte" class="w-full my-2 text-center inputForm smallText" autofocus>
+                    <input id="email"           name="email"    required type="text" placeholder="Identifiant"   class="w-full my-2 text-center inputForm smallText">
+                    <input id="accountPassword" name="password"          type="text" placeholder="Mot de passe"  class="w-full my-2 text-center inputForm smallText">
+                    <input id="pseudo"          name="pseudo"            type="text" placeholder="Pseudo"        class="w-full my-2 text-center inputForm smallText order-2 lg:order-none">
+                    <div class="flex justify-center lg:grid lg:grid-cols-subgrid lg:col-span-1 lg:col-span-4 order-1 lg:order-none">
+                        <button type="button" class="col-start-3 text-center colorFontBleuLogo link" onclick="passwordGenerator()">Générer un mot de passe</button>
+                    </div>
                 </div>
 
                 <!-- Clé de sécurité -->
@@ -255,7 +258,6 @@
                     </button>
                 </div>
 
-                <button type="button" class="buttonForm" onclick="passwordGenerator()">Générer un mot de passe</button>
                 <button type="submit" id="formButton" class="buttonForm mx-2 min-[500px]:mx-4 my-2">Ajouter</button>
                 <div class="w-full tableRowTop"></div>
             </div>

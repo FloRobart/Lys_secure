@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Ce fichier fait partie du projet Account Manager
+ * Ce fichier fait partie du projet Lys secure
  * Copyright (C) 2024 Floris Robart <florobart.github.com>
  */
 
@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    protected $connection = 'account_manager';
+    protected $connection = 'lys_secure';
     protected $table = 'keys';
 
     /**

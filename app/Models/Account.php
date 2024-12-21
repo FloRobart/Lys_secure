@@ -2,7 +2,7 @@
 namespace App\Models;
 
 /*
- * Ce fichier fait partie du projet Account Manager
+ * Ce fichier fait partie du projet Lys secure
  * Copyright (C) 2024 Floris Robart <florobart.github@gmail.com>
  */
 
@@ -15,7 +15,7 @@ class Account extends Model
     use HasFactory;
 
     public $timestamps = false;
-    protected $connection = 'account_manager';
+    protected $connection = 'lys_secure';
     protected $table = 'accounts';
 
     /**

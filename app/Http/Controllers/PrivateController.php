@@ -2,7 +2,7 @@
 namespace App\Http\Controllers;
 
 /*
- * Ce fichier fait partie du projet Account Manager
+ * Ce fichier fait partie du projet Lys secure
  * Copyright (C) 2024 Floris Robart <florobart.github@gmail.com>
  */
 
@@ -89,7 +89,7 @@ class PrivateController extends Controller
 
         /* Validation des données */
         $request->validate([
-            'account_id' => 'required|min:1|exists:account_manager.accounts,id',
+            'account_id' => 'required|min:1|exists:lys_secure.accounts,id',
             'password' => 'required|string',
         ], [
             'account_id.required' => 'Vous n\'êtes pas censé modifier cette valeur 1',
@@ -564,7 +564,7 @@ class PrivateController extends Controller
 
         /* Validation des données */
         $request->validate([
-            'id' => 'required|numeric|min:1|exists:account_manager.accounts,id',
+            'id' => 'required|numeric|min:1|exists:lys_secure.accounts,id',
             'name' => 'required|string|min:1|max:255',
             'email' => 'required|string|min:1|max:255',
             'password' => 'nullable|string|min:1|max:255',
@@ -639,7 +639,7 @@ class PrivateController extends Controller
         setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
 
         $request->validate([
-            'account_id' => 'required|numeric|min:1|exists:account_manager.accounts,id',
+            'account_id' => 'required|numeric|min:1|exists:lys_secure.accounts,id',
             'password' => 'required|string|min:1|max:255',
         ], [
             'id.required' => 'L\'id est obligatoire.',

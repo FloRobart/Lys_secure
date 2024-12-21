@@ -2,7 +2,7 @@
 namespace App\Models;
 
 /*
- * Ce fichier fait partie du projet Account Manager
+ * Ce fichier fait partie du projet Lys secure
  * Copyright (C) 2024 Floris Robart <florobart.github@gmail.com>
  */
 

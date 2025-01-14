@@ -7,7 +7,7 @@
 @include('layouts.head')
 
 @section('title')
-    @yield('title', 'Gestionnaire de comptes')
+    @yield('title', 'Lys secure')
 @endsection
 
 @section('styles')

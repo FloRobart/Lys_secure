@@ -6,12 +6,12 @@
 <!-- Page d'accueil -->
 @extends('layouts.page_template')
 @section('title')
-    Gestionnaire de comptes
+    Lys secure
 @endsection
 
 @section('content')
 <!-- Titre de la page -->
-@include('components.page-title', ['title' => 'Bienvenue sur votre gestionnaire de comptes !'])
+@include('components.page-title', ['title' => 'Bienvenue sur Lys secure !'])
 
 <!-- Messages d'erreur et de succès -->
 <div class="colCenterContainer mt-8 px-4">
@@ -22,7 +22,7 @@
 <!-- Contenu de la page -->
 <section class="colCenterContainer space-y-12 mt-4 px-6 mb-32 bgPage">
     <div class="colCenterContainer">
-        <span class="bigText text-center">Pour commencer, veuillez créer une clé de sécurité pour votre gestionnaire de comptes.</span>
+        <span class="bigText text-center">Pour commencer, veuillez créer une clé de sécurité pour acceder à vos compte enregistrer dans Lys secure.</span>
         <span class="bigTextAlert text-center font-bold">ATTENTION : Cette clé est obligatoire pour accéder à vos comptes et ne pourra en aucun cas être récupéré.</span>
         <span class="bigTextAlert text-center font-bold">Si vous la perdez, vous ne pourrez plus accéder à vos comptes.</span>
         <span class="normalTextAlert text-center font-bold">Il est donc fortement recommandé de la noter dans un endroit sûr.</span>

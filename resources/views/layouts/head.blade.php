@@ -13,7 +13,7 @@
 
         <!-- Titre de la page -->
         <!---------------------->
-        <title>Gestionnaire de compte - @yield('title')</title>
+        <title>Lys secure - @yield('title')</title>
 
         <!-- Fonts -->
         <!----------->

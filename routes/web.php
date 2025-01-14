@@ -18,7 +18,7 @@ Route::middleware(['auth', VerifIP::class])->group(function () {
     /*---------*/
     /* Accueil */
     /*---------*/
-    /* Route vers l'accueil du gestionnaire */
+    /* Route vers l'accueil de Lys secure */
     Route::get('/', [PrivateController::class, 'accueil'])->name('accueil');
 
     /* Route vers l'accueil général du serveur */
@@ -42,9 +42,9 @@ Route::middleware(['auth', VerifIP::class])->group(function () {
     Route::post('/key/change', [PrivateController::class, 'changeKeySave'])->name('key.change.save');
 
 
-    /*-------------------------*/
-    /* Gestionnaire de comptes */
-    /*-------------------------*/
+    /*---------------------*/
+    /* Gestion des comptes */
+    /*---------------------*/
     /* Affiche des comptes */
     Route::get('/comptes', [PrivateController::class, 'comptes'])->name('comptes');
     Route::get('/comptes/name/{name}', [PrivateController::class, 'comptesName'])->name('comptes.name');

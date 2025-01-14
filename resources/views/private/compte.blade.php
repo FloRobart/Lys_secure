@@ -6,12 +6,12 @@
 <!-- Page d'accueil -->
 @extends('layouts.page_template')
 @section('title')
-    Gestionnaire de comptes
+    Lys secure
 @endsection
 
 @section('content')
 <!-- Titre de la page -->
-@include('components.page-title', ['title' => 'Gestionnaire de comptes'])
+@include('components.page-title', ['title' => 'Lys secure'])
 
 <!-- Messages d'erreur et de succès -->
 <div class="colCenterContainer mt-8 px-4">

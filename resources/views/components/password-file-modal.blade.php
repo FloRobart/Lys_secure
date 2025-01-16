@@ -5,7 +5,7 @@
 
 <form id="fileForm" action="{{ route('comptes.upload') }}" method="POST" class="colCenterContainer" enctype="multipart/form-data">
     @csrf
-    <label for="file" class="buttonForm mt-8 cursor-pointer">Charger les comptes depuis un fichier texte</label>
+    <label for="file" class="buttonForm mt-8 cursor-pointer">Importer</label>
     <input type="file" id="file" name="file" class="hidden" accept=".txt,.md" onchange="password_file_modal()">
 
     <!-- Modal -->

@@ -283,10 +283,10 @@
         @endphp
 
         <!-- Changement de tout les mots de passe -->
-        <button type="button" onclick="password_modal('{{ route('modify.password') }}', null, '{{ implode('*****', $param) }}', '*****')" class="buttonForm">Changer tout les mots de passe qui sont affiché</button>
+        <button type="button" onclick="password_modal('{{ route('modify.password') }}', null, '{{ implode('*****', $param) }}', '*****')" class="buttonForm">Modifier tous les mots de passe qui sont affichés</button>
 
         <!-- Sauvegarder les comptes dans un fichier texte (Markdown) -->
-        <button type="button" onclick="password_modal('{{ route('comptes.download') }}', null, '{{ implode('*****', $param) }}', '*****')" class="buttonForm mt-8">Sauvegarder les comptes dans un fichier texte</button>
+        <button type="button" onclick="password_modal('{{ route('comptes.download') }}', null, '{{ implode('*****', $param) }}', '*****')" class="buttonForm mt-8">Exporter</button>
 
         <!-- Charger les comptes depuis un fichier texte -->
         @include('components.password-file-modal')

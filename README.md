@@ -19,17 +19,17 @@
 
 ## Présentation
 
-**Lys secure** est une application web de gestion de compte. Elle permet d'enregistrer et de gérer ces comptes et mot de passe. Vous pouvez ajouter, modifier, supprimer, rechercher, trier et filtrer vos compte pour pouvoir copié votre mot de passe le plus rapidement possible. Il est totalement sécurisé grâce à un système de cryptage basé sur une clé qui n'est pas enregistrer dans la base de données, se qui fait que même si la base de données est piratée, les mots de passe ne pourront pas être déchiffrés.
+**Lys secure** est une application web de gestion de compte. Elle permet d'enregistrer et de gérer ces comptes et mots de passe. Vous pouvez ajouter, modifier, supprimer, rechercher, trier et filtrer vos comptes pour pouvoir copié votre mot de passe le plus rapidement possible. Il est totalement sécurisé grâce à un système de cryptage basé sur une clé qui n'est pas enregistré dans la base de données, ce qui fait que même si la base de données est piratée, les mots de passe ne pourront pas être déchiffrés.
 
-**Lys secure** à été conçue pour être utilisé par plusieurs personnes, c'est pourquoi elle permet de créer plusieurs comptes utilisateurs. Chaque utilisateur peut voir uniquement ses propres comptes, il ne peut pas voir les comptes des autres utilisateurs. Si un utilisateur arrive quand même à accéder aux comptes d'un autre utilisateur (se qui n'est normalement pas possible), il ne pourra pas voir les mots de passe, car ils sont cryptés avec une clé qui est propre à chaque utilisateur et qui n'est pas enregistrée dans la base de données. Si vous êtes seul à utiliser l'application et que vous ne voulez pas créer de compte utilisateur, vous devrez modifier le code source (ce qui est tout à fait possible).
+**Lys secure** a été conçue pour être utilisé par plusieurs personnes, c'est pourquoi elle permet de créer plusieurs comptes utilisateurs. Chaque utilisateur peut voir uniquement ses propres comptes, il ne peut pas voir les comptes des autres utilisateurs. Si un utilisateur arrive quand même à accéder aux comptes d'un autre utilisateur (ce qui n'est normalement pas possible), il ne pourra pas voir les mots de passe, car ils sont cryptés avec une clé qui est propre à chaque utilisateur et qui n'est pas enregistrée dans la base de données. Si vous êtes seul à utiliser l'application et que vous ne voulez pas créer de compte utilisateur, vous devrez modifier le code source (ce qui est tout à fait possible).
 
-**Lys secure** n'est pas disponible en ligne, si vous voulez l'utiliser, vous devrez l'installer sur votre propre serveur. Si vous voulez créer un serveur personnel vous pouvez suivre les instructions de ma documentation sur la [création d'un serveur personnel](https://florobart.github.io/Documentations/src/doc_creation_serveur_local.html). Si vous avez déjà un serveur personnel, vous pouvez suivre les [instructions d'installation de **Lys secure**](#installation).
+**Lys secure** n'est pas disponible en ligne, si vous voulez l'utiliser, vous devrez l'installer sur votre propre serveur. Si vous voulez créer un serveur personnel, vous pouvez suivre les instructions de ma documentation sur la [création d'un serveur personnel](https://florobart.github.io/Documentations/src/doc_creation_serveur_local.html). Si vous avez déjà un serveur personnel, vous pouvez suivre les [instructions d'installation de **Lys secure**](#installation).
 
-**Lys secure** est une application web open-source, elle est donc gratuite et libre d'utilisation. Vous pouvez l'utiliser, la modifier, la distribuer, la partager, etc. comme bon vous semble. Par contre, vous ne pouvez pas la vendre, ni la commercialiser, ni la distribuer sans en donner l'accès gratuit.
+**Lys secure** est une application web open source, elle est donc gratuite et libre d'utilisation. Vous pouvez l'utiliser, la modifier, la distribuer et la partager gratuitement. Par contre, vous ne pouvez ni la vendre, ni la commercialiser, ni la distribuer sans en donner l'accès gratuit, conformément à ce qui est noté dans [la licence](#license).
 
 ## Fonctionnalités
 
-**Grâce à cette application vous pourrez :**
+**Grâce à cette application, vous pourrez :**
 
 - **Ajouter un compte :** Vous pouvez ajouter un compte en renseignant son **nom**, son **identifiant**, son **mot de passe** et votre **pseudo**.
 - **Modifier un compte :** Vous pouvez modifier un compte en renseignant son **nom**, son **identifiant**, son **mot de passe** et votre **pseudo**.
@@ -43,9 +43,9 @@
 - **Voir des statistiques sur vos comptes :** Vous pouvez voir des statistiques sur vos comptes.
   - Le nombre de comptes
   - Le nombre de comptes différents
-  - Le nombre d'idendifiants différents
+  - Le nombre d'identifiants différents
   - Le nombre de comptes Gmail différents
-  - Le nombre de pseudo différents
+  - Le nombre de pseudos différents
 
 ## Images
 
@@ -139,14 +139,14 @@ Pour installer **Lys secure** sur votre serveur, vous devez avoir les prérequis
 
 ## Autheur
 
-Lys secure est un projet open-source développé par [Floris Robart](https://florobart.github.io/)
+**Lys secure** est un projet open-source développé par [Floris Robart](https://florobart.github.io/)
 
 ## Report de bug et suggestions
 
-Si vous découvrez une erreur, quelquelle soit, cela peut êgre une faute de frappe ou d'orthographe, une erreur de calcul, une erreur de conception, un bug qui empêche le bon fonctionnement de l'application, ou tout autre problème, Merci de me le signaler par mail à l'adresse [florobart.github@gmail.com](mailto:florobart.github@gmail.com). Toutes les erreurs, quelque soit leur nature ou leur importance, seront traitées le plus rapidement possible.
+Si vous découvrez une erreur, quelqu'elle soit, cela peut être une faute de frappe ou d'orthographe, une erreur de calcul, une erreur de conception, un bug qui empêche le bon fonctionnement de l'application, ou tout autre problème, merci de me le signaler par mail à l'adresse [florobart.github@gmail.com](mailto:florobart.github@gmail.com). Toutes les erreurs, quelle que soit leur nature ou leur importance, seront traitées le plus rapidement possible.
 
-Si vous avez une une **suggestion**, une **idée**, une **amélioration**, ou une **demande de fonctionnalité**, merci de me la communiquer par mail à l'adresse [florobart.github@gmail.com](mailto:florobart.github@gmail.com). Toutes les suggestions, quelque soit leur nature ou leur importance, seront étudiées et prises en compte dans la mesure du possible.
+Si vous avez une **suggestion**, une **idée**, une **amélioration**, ou une **demande de fonctionnalité**, merci de me la communiquer par mail à l'adresse [florobart.github@gmail.com](mailto:florobart.github@gmail.com). Toutes les suggestions, quelle que soit leur nature ou leur importance, seront étudiées et prises en compte dans la mesure du possible.
 
 ## License
 
-Lys secure est un projet open-source sous licence [GNU General Public License v3.0](https://opensource.org/licenses/GPL-3.0).
+**Lys secure** est un projet open-source sous licence [GNU General Public License v3.0](https://opensource.org/licenses/GPL-3.0).

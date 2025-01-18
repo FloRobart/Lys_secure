@@ -225,8 +225,8 @@
                 <div class="grid grid-cols-1 lg:grid-cols-4 gap-x-4">
                     <input id="name"            name="name"        required type="text" placeholder="Nom du compte" class="w-full my-2 text-center inputForm smallText" autofocus>
                     <input id="identifiant"     name="identifiant" required type="text" placeholder="Identifiant"   class="w-full my-2 text-center inputForm smallText">
-                    <input id="accountPassword" name="password"          type="text" placeholder="Mot de passe"  class="w-full my-2 text-center inputForm smallText">
-                    <input id="pseudo"          name="pseudo"            type="text" placeholder="Pseudo"        class="w-full my-2 text-center inputForm smallText order-2 lg:order-none">
+                    <input id="accountPassword" name="password"             type="text" placeholder="Mot de passe"  class="w-full my-2 text-center inputForm smallText">
+                    <input id="pseudo"          name="pseudo"               type="text" placeholder="Pseudo"        class="w-full my-2 text-center inputForm smallText order-2 lg:order-none">
                     <div class="flex justify-center lg:grid lg:grid-cols-subgrid lg:col-span-1 lg:col-span-4 order-1 lg:order-none">
                         <button type="button" class="col-start-3 text-center colorFontBleuLogo link" onclick="passwordGenerator()">Générer un mot de passe</button>
                     </div>
@@ -384,7 +384,7 @@
 
         /* Remplissage du formulaire */
         document.getElementById('name').value = name;
-        document.getElementById('email').value = email;
+        document.getElementById('identifiant').value = email;
         document.getElementById('pseudo').value = pseudo;
 
         if (document.getElementById('id') != null) {

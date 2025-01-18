@@ -95,7 +95,7 @@ Pour installer **Lys secure** sur votre serveur, vous devez avoir les prérequis
 
 - [Un serveur sous Linux de préférence](https://florobart.github.io/Documentations/src/doc_creation_serveur_local.html)
   - Vous pouvez également l'installer sur un ordinateur de bureau ou un hébergement web sous Linux, Windows ou MacOS, mais vous devrez adapter vous-même les instructions d'installation.
-- [PHP 8.x](https://florobart.github.io/Documentations/src/doc_developpement_web.html#php) (avec les extensions suivantes)
+- [PHP 8.x](https://florobart.github.io/Documentations/src/doc_developpement_web.html#php)
 - [Composer](https://florobart.github.io/Documentations/src/doc_developpement_web.html#composer)
 - [Node.js](https://florobart.github.io/Documentations/src/doc_developpement_web.html#installation-de-nodejs---linux)
 - [NPM](https://florobart.github.io/Documentations/src/doc_developpement_web.html#installation-de-npm---linux)

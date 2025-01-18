@@ -489,7 +489,7 @@ class PrivateController extends Controller
         /* Validation des données */
         $request->validate([
             'name' => 'required|string|min:1|max:255',
-            'email' => 'required|string|min:1|max:255',
+            'identifiant' => 'required|string|min:1|max:255',
             'password' => 'required|string|min:1|max:255',
             'pseudo' => 'nullable|string|min:1|max:255',
             'key' => 'required|string|min:1|max:255',
@@ -498,10 +498,10 @@ class PrivateController extends Controller
             'name.string' => 'Le nom doit être une chaine de caractère.',
             'name.min' => 'Le nom doit contenir au moins 1 caractère.',
             'name.max' => 'Le nom ne doit pas dépasser 255 caractères.',
-            'email.required' => 'L\'email est obligatoire.',
-            'email.string' => 'L\'email doit être une chaîne de caractères.',
-            'email.min' => 'L\'email doit contenir au moins 1 caractère.',
-            'email.max' => 'L\'email ne doit pas dépasser 255 caractères.',
+            'identifiant.required' => 'L\'identifiant est obligatoire.',
+            'identifiant.string' => 'L\'identifiant doit être une chaîne de caractères.',
+            'identifiant.min' => 'L\'identifiant doit contenir au moins 1 caractère.',
+            'identifiant.max' => 'L\'identifiant ne doit pas dépasser 255 caractères.',
             'password.required' => 'Le clé de sécurité est obligatoire.',
             'password.string' => 'La clé de sécurité doit être une chaîne de caractères.',
             'password.min' => 'La clé de sécurité doit contenir au moins 1 caractère.',
@@ -523,13 +523,13 @@ class PrivateController extends Controller
         }
 
         /* Message de confirmation */
-        if (Account::where('name', $request->name)->where('email', $request->email)->first()) {
+        if (Account::where('name', $request->name)->where('email', $request->identifiant)->first()) {
             $message = 'Attention, un compte similaire éxiste déjà. 🤔';
         } else {
             $message = '';
         }
 
-        if (!Account::where('email', $request->email)->first()) {
+        if (!Account::where('email', $request->identifiant)->first()) {
             $message = $message . 'C\'est la première fois que vous utilisez cet email, vérifiez bien qu\'il est correct. 😉';
         }
 
@@ -537,7 +537,7 @@ class PrivateController extends Controller
         $compte = new Account();
         $compte->user_id = Auth::user()->id;
         $compte->name = ucfirst($request->name);
-        $compte->email = $request->email;
+        $compte->email = $request->identifiant;
         $compte->pseudo = $request->pseudo ?? '-';
 
         /* Chiffrement du mot de passe */
@@ -566,7 +566,7 @@ class PrivateController extends Controller
         $request->validate([
             'id' => 'required|numeric|min:1|exists:lys_secure.accounts,id',
             'name' => 'required|string|min:1|max:255',
-            'email' => 'required|string|min:1|max:255',
+            'identifiant' => 'required|string|min:1|max:255',
             'password' => 'nullable|string|min:1|max:255',
             'pseudo' => 'nullable|string|min:1|max:255',
             'key' => 'required|string|min:1|max:255',
@@ -579,10 +579,10 @@ class PrivateController extends Controller
             'name.string' => 'Le name doit être une name.',
             'name.min' => 'Le name doit contenir au moins 1 caractère.',
             'name.max' => 'Le name ne doit pas dépasser 255 caractères.',
-            'email.required' => 'L\'email est obligatoire.',
-            'email.string' => 'L\'email doit être une chaîne de caractères.',
-            'email.min' => 'L\'email doit contenir au moins 1 caractère.',
-            'email.max' => 'L\'email ne doit pas dépasser 255 caractères.',
+            'identifiant.required' => 'L\'identifiant est obligatoire.',
+            'identifiant.string' => 'L\'identifiant doit être une chaîne de caractères.',
+            'identifiant.min' => 'L\'identifiant doit contenir au moins 1 caractère.',
+            'identifiant.max' => 'L\'identifiant ne doit pas dépasser 255 caractères.',
             'password.string' => 'La clé de sécurité doit être une chaîne de caractères.',
             'password.min' => 'La clé de sécurité doit contenir au moins 1 caractère.',
             'password.max' => 'La clé de sécurité ne doit pas dépasser 255 caractères.',
@@ -611,7 +611,7 @@ class PrivateController extends Controller
 
         /* Modification de l'compte */
         $compte->name = ucfirst($request->name);
-        $compte->email = $request->email;
+        $compte->email = $request->identifiant;
         $compte->pseudo = $request->pseudo ?? '-';
 
         /* Chiffrement du mot de passe */

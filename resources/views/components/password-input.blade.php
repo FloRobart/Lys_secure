@@ -3,7 +3,7 @@
  * Copyright (C) 2024 Floris Robart <florobart.github@gmail.com>
 --}}
 
-<div>
+<div class="w-full">
     <label for="password" class="labelForm">@if ($confirmation) Confirmation de la @endif Clé de sécurité @include('components.asterisque')</label>
     <div class="relative">
         <input @if ($confirmation) name="password_confirmation" id="password_confirmation" @else name="password" id="password" @endif type="password" minlength="4" @if ($newPassword) autocomplete="new-password" @else autocomplete="current-password" @endif class="inputForm" placeholder="Entrez votre clé de sécurité" value="{{ old('password') }}" autofocus required>

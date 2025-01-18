@@ -77,3 +77,9 @@ Route::middleware(['auth', VerifIP::class])->group(function () {
 /*========================*/
 /* Route pour la redirection en cas de mauvaise authentification */
 Route::get('/redirection', function () { return redirect(env('HOME_SERVER_MAISON')); })->name('login');
+
+/* CGU, Mentions légales et autres documents */
+Route::get('/cgu', function () { return redirect(env('HOME_SERVER_MAISON') . '/cgu'); })->name('cgu');
+Route::get('/contact', function () { return redirect(env('HOME_SERVER_MAISON') . '/contact'); })->name('contact');
+Route::get('/bug/report', function () { return redirect(env('HOME_SERVER_MAISON') . '/bug/report'); })->name('bug.report');
+Route::get('/information', function () { return redirect(env('HOME_SERVER_MAISON') . '/information'); })->name('tools.information');

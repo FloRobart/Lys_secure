@@ -27,7 +27,7 @@
                     <!-- Contenu de l'email -->
                     <tr>
                         <td class="body" style="padding: 40px; text-align: left; font-size: 16px; line-height: 1.6;">
-                            {{ ucfirst(auth()->user()->name) }} vous a partagé son compte "<b>{{ $data['name'] }}</b>" depuis Lys secure.
+                            {{ ucfirst(auth()->user()->name) }} vous a partagé son compte "<b>{{ $data['name'] }}</b>" depuis <span style="color: #3232FF">Lys Secure</span>.
 
                             <br><br>
 

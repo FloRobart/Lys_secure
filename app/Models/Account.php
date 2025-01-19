@@ -30,4 +30,20 @@ class Account extends Model
         'password',
         'pseudo',
     ];
+
+    /**
+     * Permet de convertir le modèle en tableau
+     * @return array<string, string> Tableau contenant les attributs du modèle
+     */
+    public function toArray()
+    {
+        return [
+            'id' => $this->id,
+            'user_id' => $this->user_id,
+            'name' => $this->name,
+            'email' => $this->email,
+            'password' => $this->password,
+            'pseudo' => $this->pseudo,
+        ];
+    }
 }

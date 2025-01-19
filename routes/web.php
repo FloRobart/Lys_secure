@@ -59,6 +59,7 @@ Route::middleware(['auth', VerifIP::class])->group(function () {
     Route::post('/compte/add', [PrivateController::class, 'addCompte'])->name('compte.add');
     Route::post('/compte/edit', [PrivateController::class, 'editCompte'])->name('compte.edit');
     Route::post('/compte/remove', [PrivateController::class, 'removeCompte'])->name('compte.remove');
+    Route::post('/compte/share', [PrivateController::class, 'shareCompte'])->name('compte.share');
 
     /* Route liée au téléchargement des comptes */
     Route::post('/comptes/mes_comptes.md', [PrivateController::class, 'downloadComptes'])->name('comptes.download');

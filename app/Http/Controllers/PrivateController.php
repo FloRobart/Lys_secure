@@ -8,9 +8,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Account;
 use App\Models\Key;
+use App\Mail\SharedCompte;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 
 
 class PrivateController extends Controller
@@ -675,6 +677,64 @@ class PrivateController extends Controller
             LogController::addLog("Erreur lors de la suppression du compte id : $compte->id {removeCompte}", Auth::user()->id, 1);
             return back()->with('error', 'Une erreur est survenue lors de la suppression du compte ❌.');
         }
+    }
+
+    /**
+     * Permet de partager un compte
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse Retourne la page précédente
+     * @method POST
+     */
+    public function shareCompte(Request $request)
+    {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        $request->validate([
+            'account_id' => 'required|numeric|min:1|exists:lys_secure.accounts,id',
+            'sharedEmail' => 'required|email|min:1|max:255',
+            'password' => 'required|string|min:1|max:255',
+        ], [
+            'account_id.required' => 'L\'id est obligatoire.',
+            'account_id.numeric' => 'L\'id doit être un nombre.',
+            'account_id.min' => 'L\'id doit être supérieur à 0.',
+            'account_id.exists' => 'L\'id n\'existe pas.',
+            'sharedEmail.required' => 'L\'email est obligatoire.',
+            'sharedEmail.email' => 'L\'email doit être une adresse email valide.',
+            'sharedEmail.min' => 'L\'email doit contenir au moins 1 caractère.',
+            'sharedEmail.max' => 'L\'email ne doit pas dépasser 255 caractères.',
+            'password.required' => 'La clé de sécurité est obligatoire.',
+            'password.string' => 'La clé de sécurité doit être une chaîne de caractères.',
+            'password.min' => 'La clé de sécurité doit contenir au moins 1 caractère.',
+            'password.max' => 'La clé de sécurité ne doit pas dépasser 255 caractères.',
+        ]);
+
+        /* Vérification de la clé de sécurité */
+        $key = Key::where('user_id', Auth::user()->id)->first();
+        if (!$key || !Hash::check($request->password, $key->key)) {
+            LogController::addLog("Tentative de partage du compte id : $request->account_id avec une clé de sécurité incorrecte {shareCompte}", Auth::user()->id, 1);
+            return back()->with('error', 'La clé de sécurité est incorrecte ❌.');
+        }
+
+        /* Vérification du propriétaire du compte */
+        $compte = Account::find($request->account_id);
+        if (!$compte) { back()->with('error', 'Le compte n\'existe pas ❌.'); }
+        if ($compte->user_id != Auth::user()->id)
+        {
+            LogController::addLog("Tentative de partage du compte id : $compte->id par " . Auth::user()->name . "(" . Auth::user()->id . ") {shareCompte}", Auth::user()->id, 2);
+            return back()->with('error', 'Ce compte ne vous appartient pas ❌.');
+        }
+
+        /* Partage du compte */
+        $data = [
+            'name' => $compte->name,
+            'email' => $compte->email,
+            'password' => $this->decryptPassword($compte->id, $request->password),
+            'pseudo' => $compte->pseudo,
+            'emailTo' => $request->sharedEmail,
+        ];
+
+        Mail::to($data['emailTo'])->send(new SharedCompte($data));
+        return back()->with('success', 'Le compte a été partagé avec succès 👍.');
     }
 
 

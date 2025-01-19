@@ -3,7 +3,7 @@
  * Copyright (C) 2024 Floris Robart <florobart.github@gmail.com>
 --}}
 
-<dialog id="password_modal" class="modal rounded-xl p-6">
+<dialog id="password_modal" class="modal rounded-xl p-6 min-[480px]:min-w-[420px] sm:min-w-[500px] xl:min-w-[600px]">
     <div class="modal-box">
         <!-- Bouton de fermeture de la modal -->
         <form method="dialog" class="flex justify-end items-center w-full">
@@ -22,7 +22,7 @@
             <input type="hidden" id="param_separator" name="param_separator">
 
             <!-- Clé de sécurité -->
-            <div>
+            <div class="w-full">
                 @include('components.password-input', ['confirmation' => false, 'newPassword' => false])
 
                 <!-- lien vers la page de changement de clé -->
@@ -32,7 +32,7 @@
             </div>
 
             <!-- Bouton de validation -->
-            <button type="submit" class="buttonForm mt-6">Valider</button>
+            <button type="submit" class="buttonForm mt-10">Valider</button>
         </form>
     </div>
 </dialog>

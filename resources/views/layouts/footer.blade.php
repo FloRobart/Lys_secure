@@ -15,13 +15,14 @@
     </div>
 
     <!-- Copiright -->
-    <div class="rowCenterContainer space-x-1 mb-4 mt-8">
+    <div class="rowCenterContainer text-center space-x-1 mb-4 mt-8 px-4">
         <span class="tinyTextReverse">Copyright © 2024 - <script>document.write(new Date().getFullYear())</script>
             <a href="https://florobart.github.io/" target="_blank"><b>Floris Robart</b></a> |
             <a class="link" href="{{ route('cgu') }}">Mentions légales et CGU</a> |
             <a class="link" href="{{ route('contact') }}">Me contacter</a> |
             <a class="link" href="{{ route('bug.report') }}">Signaler un bug</a> |
-            <a class="link" href="{{ route('tools.information') }}">Présentation des outils</a>
+            <a class="link" href="{{ route('tools.information') }}">Présentation des outils</a> |
+            <a class="link" href="{{ route('generator.password') }}">Générateur de mot de passe</a>
         </span>
     </div>
 </footer>

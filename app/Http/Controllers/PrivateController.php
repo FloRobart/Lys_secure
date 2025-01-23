@@ -131,9 +131,9 @@ class PrivateController extends Controller
         $length = random_int(env('PASSWORD_MIN_LENGTH', 12), env('PASSWORD_MIN_LENGTH', 12) + 6);
 
         /* Définit les ensembles de caractères autorisés */
-        $lowercase = 'abcdefghijklmnopqrstuvwxyz';
-        $uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        $numbers = '0123456789';
+        $lowercase = 'abcdefghjkmnpqrstuvwxyz';
+        $uppercase = 'ABCDEFGHJKMNPQRSTUVWXYZ';
+        $numbers = '123456789';
         $specialChars = '!@#$%&*()-_=+[]{}|;:,.<>?';
         $allChars = str_shuffle($lowercase . $uppercase . $numbers . $specialChars);
 

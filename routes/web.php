@@ -5,6 +5,7 @@
  */
 
 use App\Http\Controllers\PrivateController;
+use App\Http\Controllers\PublicController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\VerifIP;
 
@@ -70,6 +71,15 @@ Route::middleware(['auth', VerifIP::class])->group(function () {
     Route::get('/get/new/password', [PrivateController::class, 'getNewPassword'])->name('get.new.password');
     Route::post('/modify/password', [PrivateController::class, 'modifyPassword'])->name('modify.password');
 });
+
+
+
+/*===========================================*/
+/* Route pour le générateur de mots de passe */
+/*===========================================*/
+Route::get('/generator/password', [PublicController::class, 'generatorPassword'])->name('generator.password');
+Route::post('/generator/password', [PublicController::class, 'generatorPasswordPost'])->name('generator.password.post');
+
 
 
 

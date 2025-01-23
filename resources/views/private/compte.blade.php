@@ -6,7 +6,7 @@
 <!-- Page d'accueil -->
 @extends('layouts.page_template')
 @section('title')
-    Lys secure
+    Comptes
 @endsection
 
 @section('content')

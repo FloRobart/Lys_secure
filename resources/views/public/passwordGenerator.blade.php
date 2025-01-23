@@ -6,12 +6,12 @@
 <!-- Page d'accueil -->
 @extends('layouts.page_template')
 @section('title')
-    Lys secure
+    Générateur de mot de passe
 @endsection
 
 @section('content')
 <!-- Titre de la page -->
-@include('components.page-title', ['title' => 'Bienvenue sur générateur de mot de passe de Lys secure !'])
+@include('components.page-title', ['title' => 'Bienvenue sur le générateur de mot de passe de Lys secure !'])
 
 <!-- Messages d'erreur et de succès -->
 <div class="colCenterContainer mt-8 px-4">

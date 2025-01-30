@@ -11,6 +11,9 @@
             <a href="{{ route('accueil') }}" class="logo">
                 <img class="w-20 sm:w-28" src="{{ asset('favicon.ico') }}" alt="Logo">
             </a>
+            <a href="{{ route('accueil') }}" class="logo">
+                <span class="normalTextReverse ml-4 font-bold">{{ env('APP_NAME_REAL') }}</span>
+            </a>
         </div>
 
         <!-- Profil -->
@@ -91,7 +94,7 @@
 
         <div id="breadcrumb" class="rowStartContainer px-4 min-[550px]:px-6 sm:px-14">
             <!-- Accueil -->
-            <a href="{{ route('accueil.general') }}" class="tinyTextReverse sm:smallTextReverse">Accueil</a>
+            <a href="{{ route('accueil.general') }}" class="tinyTextReverse sm:smallTextReverse">{{ env('FLORACCESS_NAME') }}</a>
             @include('components.breadcrumb-link', ['name' => 'Lys secure', 'link' => route('accueil')])
 
             @foreach ($breadcrumb as $key => $value)

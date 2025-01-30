@@ -23,13 +23,13 @@ Route::middleware(['auth', VerifIP::class])->group(function () {
     Route::get('/', [PrivateController::class, 'accueil'])->name('accueil');
 
     /* Route vers l'accueil général du serveur */
-    Route::get('/accueil/general', function () { return redirect(env('HOME_SERVER_MAISON') . '/private/accueil'); })->name('accueil.general');
+    Route::get('/accueil/general', function () { return redirect(env('FLORACCESS_LINK') . '/private/accueil'); })->name('accueil.general');
 
 
     /*--------*/
     /* Profil */
     /*--------*/
-    Route::get('/profil', function () { return redirect(env('HOME_SERVER_MAISON') . '/profil'); })->name('profil');
+    Route::get('/profil', function () { return redirect(env('FLORACCESS_LINK') . '/profil'); })->name('profil');
 
 
     /*-----------------*/
@@ -87,10 +87,10 @@ Route::post('/generator/password', [PublicController::class, 'generatorPasswordP
 /* Route pour les invités */
 /*========================*/
 /* Route pour la redirection en cas de mauvaise authentification */
-Route::get('/redirection', function () { return redirect(env('HOME_SERVER_MAISON')); })->name('login');
+Route::get('/redirection', function () { return redirect(env('FLORACCESS_LINK')); })->name('login');
 
 /* CGU, Mentions légales et autres documents */
-Route::get('/cgu', function () { return redirect(env('HOME_SERVER_MAISON') . '/cgu'); })->name('cgu');
-Route::get('/contact', function () { return redirect(env('HOME_SERVER_MAISON') . '/contact'); })->name('contact');
-Route::get('/bug/report', function () { return redirect(env('HOME_SERVER_MAISON') . '/bug/report'); })->name('bug.report');
-Route::get('/information', function () { return redirect(env('HOME_SERVER_MAISON') . '/information'); })->name('tools.information');
+Route::get('/cgu', function () { return redirect(env('FLORACCESS_LINK') . '/cgu'); })->name('cgu');
+Route::get('/contact', function () { return redirect(env('FLORACCESS_LINK') . '/contact'); })->name('contact');
+Route::get('/bug/report', function () { return redirect(env('FLORACCESS_LINK') . '/bug/report'); })->name('bug.report');
+Route::get('/information', function () { return redirect(env('FLORACCESS_LINK') . '/information'); })->name('tools.information');
